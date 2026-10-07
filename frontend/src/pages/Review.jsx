@@ -8,6 +8,7 @@ import RedirectChain from "../components/RedirectChain.jsx";
 import ThreatGauge from "../components/ThreatGauge.jsx";
 import VoiceExplanation from "../components/VoiceExplanation.jsx";
 import EvidencePassport from "../components/EvidencePassport.jsx";
+import ManipulationGraph from "../components/ManipulationGraph.jsx";
 import { ACTION_LABELS, cx, formatDateTime } from "../lib/ui";
 
 /**
@@ -688,17 +689,13 @@ export default function Review() {
                     ))}
                   </div>
 
-                  <p className="mt-5 font-mono text-[10px] font-bold tracking-[0.18em] text-slate-500">MANIPULATION CHAIN</p>
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    {(defenceEvidence.attack_chain?.nodes || []).map((node, index, nodes) => (
-                      <div key={node.id} className="flex items-center gap-2">
-                        <div className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2">
-                          <p className="font-mono text-[9px] text-slate-500">{node.kind.replaceAll("_", " ")}</p>
-                          <p className="mt-0.5 text-xs font-bold text-slate-200">{node.label}</p>
-                        </div>
-                        {index < nodes.length - 1 && <span className="font-mono text-slate-600">→</span>}
-                      </div>
-                    ))}
+                  <div className="mt-4">
+                    <ManipulationGraph
+                      attackChain={defenceEvidence.attack_chain}
+                      cues={verdict?.cues || []}
+                      intendedActions={defenceEvidence.intended_actions || []}
+                      recommendation={defenceEvidence.recommendation || "VERIFY"}
+                    />
                   </div>
                 </div>
 
