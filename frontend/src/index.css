@@ -70,6 +70,41 @@
     word-break: break-word;
   }
 
+
+  /* Phase 3 — Interception Room command surface. The room is intentionally
+     denser than a generic dashboard: evidence first, agents second, action last. */
+  .intercept-hero {
+    background:
+      radial-gradient(circle at 72% 30%, rgba(0, 229, 255, .08), transparent 34%),
+      linear-gradient(135deg, rgba(15, 23, 42, .96), rgba(2, 6, 23, .94));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 20px 60px rgba(0,0,0,.28);
+  }
+  .intercept-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 1024px) {
+    .intercept-hero-grid { grid-template-columns: minmax(0, 1fr) 300px; }
+  }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 999px; background: #00E676;
+    box-shadow: 0 0 12px rgba(0,230,118,.7);
+  }
+  .agent-mini {
+    display: flex; align-items: center; gap: 9px; min-width: 0;
+    border: 1px solid rgba(51,65,85,.72); border-radius: 10px;
+    background: rgba(2,6,23,.55); padding: 9px 10px;
+  }
+  .agent-index {
+    display: grid; place-items: center; width: 26px; height: 26px; flex: 0 0 auto;
+    border: 1px solid rgba(0,229,255,.22); border-radius: 7px;
+    background: rgba(0,229,255,.06); font: 700 9px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: rgba(0,229,255,.85);
+  }
+  .decision-target {
+    box-shadow: inset 0 0 30px rgba(248,113,113,.025);
+  }
+
   /* Human-approval gate buttons (Review screen, section 05) — colour variants
      only; layout classes are applied at the call site. */
   .gate-btn {

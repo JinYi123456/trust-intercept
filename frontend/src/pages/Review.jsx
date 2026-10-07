@@ -340,8 +340,20 @@ export default function Review() {
     "TRUST//INTERCEPT reasons over patterns and public reputation data — it cannot verify a caller's or sender's real-world identity.",
   ];
 
+  const agentRows = [
+    { name: "HUNTER", role: "attack evidence", state: verdict ? "COMPLETE" : "QUEUED", mark: "01" },
+    { name: "SKEPTIC", role: "false-positive challenge", state: verdict ? "COMPLETE" : "QUEUED", mark: "02" },
+    { name: "VERIFIER", role: "decision-changing evidence", state: defenceEvidence ? "COMPLETE" : "QUEUED", mark: "03" },
+    { name: "ARBITER", role: "evidence synthesis", state: verdict ? "COMPLETE" : "QUEUED", mark: "04" },
+  ];
+  const intendedAction =
+    defenceEvidence?.attacker_intended_action ||
+    defenceEvidence?.intended_action ||
+    defenceEvidence?.attack_chain?.nodes?.find((node) => node.kind === "action")?.label ||
+    (verdict?.action_required ? verdict.action_required.replaceAll("_", " ") : "—");
+
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-7xl">
       {/* Case header + tabs */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h1 className="font-mono text-lg font-black uppercase tracking-[0.2em] text-slate-200 sm:text-xl">
@@ -351,6 +363,49 @@ export default function Review() {
           CASE <span className="text-neon-cyan">{caseId}</span> · {caseInfo.input_type} · {caseInfo.status}
         </span>
       </div>
+
+      <section className="intercept-hero mb-5 overflow-hidden rounded-2xl border border-slate-800/90">
+        <div className="intercept-hero-grid">
+          <div className="p-5 sm:p-6 lg:p-7">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="status-dot" />
+              <span className="font-mono text-[10px] font-bold tracking-[0.24em] text-neon-cyan">LIVE EVIDENCE OBSERVATORY</span>
+              <span className="rounded-full border border-slate-700 bg-slate-950/60 px-2 py-1 font-mono text-[9px] tracking-wider text-slate-500">HUMAN-GATED</span>
+            </div>
+            <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
+              <div>
+                <p className="font-mono text-[10px] tracking-[0.22em] text-slate-500">THE DECISION UNDER ATTACK</p>
+                <h2 className="mt-2 max-w-3xl text-2xl font-black tracking-tight text-slate-100 sm:text-3xl">
+                  What is this message trying to make you do?
+                </h2>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+                  TRUST//INTERCEPT investigates the claim, challenges its own conclusion, and creates an independent verification path before you act.
+                </p>
+              </div>
+              <div className="decision-target rounded-xl border border-neon-red/30 bg-neon-red/5 px-4 py-3 lg:min-w-[250px]">
+                <p className="font-mono text-[9px] font-bold tracking-[0.2em] text-neon-red">ATTACKER'S INTENDED ACTION</p>
+                <p className="mt-1 text-base font-black uppercase text-slate-100">{intendedAction}</p>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-slate-800/80 bg-slate-950/35 px-5 py-4 lg:border-l lg:border-t-0 sm:px-6">
+            <div className="grid gap-2 sm:grid-cols-4 lg:grid-cols-1">
+              {agentRows.map((agent) => (
+                <div key={agent.name} className="agent-mini">
+                  <span className="agent-index">{agent.mark}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-[10px] font-black tracking-[0.16em] text-slate-200">{agent.name}</span>
+                      <span className="font-mono text-[8px] tracking-wider text-neon-green">{agent.state}</span>
+                    </div>
+                    <p className="mt-0.5 truncate text-[10px] text-slate-500">{agent.role}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl border border-slate-800/80 bg-space-950/70 p-1" role="tablist">
         {TABS.map((item) => (
