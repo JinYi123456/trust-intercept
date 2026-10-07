@@ -340,6 +340,16 @@ export default function Review() {
     "TRUST//INTERCEPT reasons over patterns and public reputation data — it cannot verify a caller's or sender's real-world identity.",
   ];
 
+  const debateEvidence = (view?.evidence || []).find((entry) => entry.tool === "agent_debate")?.raw_output || null;
+  const debateRound = debateEvidence?.rounds?.[debateEvidence.rounds.length - 1] || null;
+  const debateResolution = debateEvidence?.resolution || null;
+  const evidenceTimeline = (view?.evidence || []).map((entry, index) => ({
+    index: index + 1,
+    tool: entry.tool,
+    time: entry.collected_at,
+    state: entry.raw_output?.module_failed ? "FAILED / FALLBACK" : "CAPTURED",
+  }));
+
   const agentRows = [
     { name: "HUNTER", role: "attack evidence", state: verdict ? "COMPLETE" : "QUEUED", mark: "01" },
     { name: "SKEPTIC", role: "false-positive challenge", state: verdict ? "COMPLETE" : "QUEUED", mark: "02" },
@@ -509,7 +519,141 @@ export default function Review() {
             <ReasoningTree view={view} />
           </div>
 
-          {/* Decision Defence Engine — the product's differentiating layer */}
+              {/* Evidence Arena — adversarial reasoning made inspectable */}
+          <section className="mt-4 glass-panel overflow-hidden border-slate-700/80 p-4 sm:p-6">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <PanelTitle>AGENTIC EVIDENCE ARENA</PanelTitle>
+                <h2 className="mt-2 text-xl font-black tracking-tight text-slate-100 sm:text-2xl">
+                  Agents must <span className="text-neon-cyan">challenge the evidence</span>, not echo it.
+                </h2>
+                <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500">
+                  Hunter searches for attack signals. Skeptic actively looks for benign explanations. Verifier identifies
+                  the independent evidence that could change the decision. The Arbiter resolves the record without hiding disagreement.
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-700 bg-space-950/70 px-3 py-2 font-mono text-[9px] tracking-wider text-slate-500">
+                {debateResolution?.consensus ? `CONSENSUS · ${String(debateResolution.consensus).replaceAll("_", " ").toUpperCase()}` : "ARENA · OFFLINE-CAPABLE"}
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-3 lg:grid-cols-3">
+              {[
+                {
+                  key: "red",
+                  number: "01",
+                  name: "HUNTER",
+                  label: "ATTACK EVIDENCE",
+                  data: debateRound?.red,
+                  accent: "border-neon-red/30 bg-neon-red/5",
+                  text: "text-neon-red",
+                },
+                {
+                  key: "blue",
+                  number: "02",
+                  name: "SKEPTIC",
+                  label: "FALSE-POSITIVE CHALLENGE",
+                  data: debateRound?.blue,
+                  accent: "border-neon-cyan/30 bg-neon-cyan/5",
+                  text: "text-neon-cyan",
+                },
+                {
+                  key: "verifier",
+                  number: "03",
+                  name: "VERIFIER",
+                  label: "WHAT COULD CHANGE THE DECISION?",
+                  data: debateRound?.verifier,
+                  accent: "border-neon-green/30 bg-neon-green/5",
+                  text: "text-neon-green",
+                },
+              ].map((agent) => (
+                <article key={agent.key} className={`rounded-xl border p-4 ${agent.accent}`}>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className={`grid h-7 w-7 place-items-center rounded-md border border-current/20 font-mono text-[9px] font-black ${agent.text}`}>
+                        {agent.number}
+                      </span>
+                      <div>
+                        <p className="font-mono text-[10px] font-black tracking-[0.16em] text-slate-100">{agent.name}</p>
+                        <p className="font-mono text-[8px] tracking-wider text-slate-500">{agent.label}</p>
+                      </div>
+                    </div>
+                    {agent.data?.score_vote && (
+                      <span className="rounded-full border border-slate-700 bg-space-950/80 px-2 py-1 font-mono text-[9px] font-bold uppercase text-slate-300">
+                        VOTE · {agent.data.score_vote}
+                      </span>
+                    )}
+                  </div>
+
+                  {agent.key !== "verifier" ? (
+                    <div className="mt-4 space-y-2">
+                      {(agent.data?.arguments || []).slice(0, 3).map((argument, index) => (
+                        <div key={`${agent.key}-${index}`} className="rounded-lg border border-slate-800 bg-space-950/75 p-2.5">
+                          <p className="text-xs font-semibold leading-relaxed text-slate-300">{argument.claim}</p>
+                          {argument.evidence_quote && (
+                            <p className="mt-1.5 border-l-2 border-slate-700 pl-2 font-mono text-[9px] leading-relaxed text-slate-500">
+                              “{argument.evidence_quote}”
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-4 space-y-2">
+                      {(agent.data?.tests || []).slice(0, 4).map((test, index) => (
+                        <div key={index} className="flex gap-2 rounded-lg border border-slate-800 bg-space-950/75 p-2.5 text-xs leading-relaxed text-slate-300">
+                          <span className="font-mono font-bold text-neon-green">0{index + 1}</span>
+                          <span>{test}</span>
+                        </div>
+                      ))}
+                      {agent.data?.overturn_condition && (
+                        <div className="mt-2 rounded-lg border border-neon-green/20 bg-neon-green/5 p-2.5 text-[10px] leading-relaxed text-neon-green/80">
+                          <strong>OVERTURN CONDITION:</strong> {agent.data.overturn_condition}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_1.2fr]">
+              <div className="rounded-xl border border-slate-800 bg-space-950/70 p-4">
+                <p className="font-mono text-[10px] font-bold tracking-[0.18em] text-slate-500">ARBITER RESOLUTION</p>
+                <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {[
+                    ["HUNTER", debateResolution?.red_vote || "—"],
+                    ["SKEPTIC", debateResolution?.blue_vote || "—"],
+                    ["CONSENSUS", debateResolution?.consensus?.replaceAll("_", " ") || "—"],
+                    ["JUDGE", debateResolution?.judge_used ? "LLM" : "RULES"],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded-lg border border-slate-800 bg-slate-900/70 p-2.5">
+                      <p className="font-mono text-[8px] tracking-wider text-slate-500">{label}</p>
+                      <p className="mt-1 text-xs font-bold uppercase text-slate-200">{value}</p>
+                    </div>
+                  ))}
+                </div>
+                {debateResolution?.policy && (
+                  <p className="mt-3 text-[10px] leading-relaxed text-slate-500">Policy: {debateResolution.policy}</p>
+                )}
+              </div>
+
+              <div className="rounded-xl border border-slate-800 bg-space-950/70 p-4">
+                <p className="font-mono text-[10px] font-bold tracking-[0.18em] text-slate-500">INVESTIGATION TIMELINE</p>
+                <div className="mt-3 flex flex-wrap items-center gap-1.5">
+                  {evidenceTimeline.slice(0, 12).map((item) => (
+                    <div key={`${item.index}-${item.tool}`} className="group relative flex items-center gap-1.5 rounded-md border border-slate-800 bg-slate-900/70 px-2 py-1.5">
+                      <span className="grid h-4 w-4 place-items-center rounded bg-neon-cyan/10 font-mono text-[8px] font-bold text-neon-cyan">{item.index}</span>
+                      <span className="font-mono text-[9px] text-slate-400">{item.tool}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-2 text-[9px] text-slate-600">Evidence is captured in execution order. Failed external checks remain visible instead of disappearing.</p>
+              </div>
+            </div>
+          </section>
+
+      {/* Decision Defence Engine — the product's differentiating layer */}
           {defenceEvidence && (
             <section className="mt-4 glass-panel overflow-hidden border-neon-cyan/30 p-4 sm:p-6">
               <div className="flex flex-wrap items-start justify-between gap-4">
