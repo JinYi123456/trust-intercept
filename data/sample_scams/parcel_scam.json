@@ -1,0 +1,34 @@
+{
+  "id": "parcel_scam_001",
+  "name": "Parcel-held delivery-fee scam (SingPost impersonation)",
+  "language": "en",
+  "channel": "sms",
+  "source": "Synthetic case built from the blueprint's Section 8 test plan (Track 03, scam-defence demo).",
+  "input_type": "text",
+  "payload": {
+    "text": "SINGPOST: Your parcel is HELD at our depot due to an unpaid delivery fee of $1.99. Settle within 24 hours or it will be returned: https://bit.ly/parcel-hold-9x2 - enter your IC number S1234567D, card details 4111 1111 1111 1111 and the OTP we sent. Urgent! Call +65 9123 4567 immediately."
+  },
+  "expected": {
+    "score": "high",
+    "action_required": true,
+    "modules_expected": ["module_1_phishing", "module_2_link_safety"],
+    "cues_present": [
+      "urgency_pressure",
+      "credential_request",
+      "payment_request",
+      "disguised_link"
+    ],
+    "cues_absent": ["too_good_to_be_true"],
+    "pii_redaction": {
+      "must_contain_placeholders": ["[REDACTED_IC_NRIC_1]", "[REDACTED_CREDIT_CARD_1]", "[REDACTED_PHONE_NUMBER_1]"],
+      "redaction_engine_regex": true
+    },
+    "flow_note": "Router fires both Module 1 (urgency + credential + payment signals) and Module 2 (contains_url) concurrently; Module 2 exposes the bit.ly shortener; synthesis returns HIGH with quoted cues; a 'report' decision produces the redacted Module 3 bundle."
+  },
+  "forbidden_in_output": [
+    "S1234567D",
+    "4111 1111 1111 1111",
+    "+65 9123 4567"
+  ],
+  "notes": "NRIC/card/phone values are fake but format-valid so the redactor must catch them. The shortened link must never be auto-opened in a real browser; Module 2 traces it server-side only."
+}

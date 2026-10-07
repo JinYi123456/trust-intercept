@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-space-900 text-slate-200 antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 229, 255, .07), transparent),
+      linear-gradient(rgba(148, 163, 184, .045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, .045) 1px, transparent 1px);
+    background-size: 100% 100%, 44px 44px, 44px 44px;
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    @apply bg-neon-cyan/30 text-white;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #1e293b transparent;
+  }
+  *::-webkit-scrollbar { width: 8px; height: 8px; }
+  *::-webkit-scrollbar-thumb { @apply bg-slate-700/70 rounded-full; }
+  *::-webkit-scrollbar-track { background: transparent; }
+}
+
+@layer components {
+  /* Glassmorphism container used across every card/panel */
+  .glass-panel {
+    @apply backdrop-blur-md bg-slate-900/60 border border-slate-800/80 shadow-2xl shadow-panel rounded-2xl;
+  }
+
+  .glass-sub {
+    @apply backdrop-blur-sm bg-slate-900/40 border border-slate-800/60 rounded-xl;
+  }
+
+  .neon-cyan-text {
+    @apply text-neon-cyan;
+    text-shadow: 0 0 8px rgba(0, 229, 255, .65), 0 0 26px rgba(0, 229, 255, .3);
+  }
+
+  .hero-title {
+    background: linear-gradient(92deg, #00E5FF 0%, #7DD3FC 38%, #00E676 72%, #00E5FF 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px rgba(0, 229, 255, .35);
+  }
+
+  .label-cyber {
+    @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400;
+  }
+
+  .btn-cyber {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold
+           border transition duration-200 focus:outline-none focus-visible:ring-2
+           focus-visible:ring-neon-cyan/60 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Keep long URLs readable instead of overflowing on mobile */
+  .break-url {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Human-approval gate buttons (Review screen, section 05) — colour variants
+     only; layout classes are applied at the call site. */
+  .gate-btn {
+    @apply border font-semibold transition duration-200;
+  }
+  .gate-safe {
+    @apply border-neon-green/60 bg-neon-green/10 text-neon-green
+           hover:bg-neon-green/20 hover:shadow-glow-green;
+  }
+  .gate-report {
+    @apply border-neon-red/60 bg-neon-red/10 text-neon-red
+           hover:bg-neon-red/20 hover:shadow-glow-red;
+  }
+  .gate-warn {
+    @apply border-gold-neon/60 bg-gold-neon/10 text-gold-neon
+           hover:bg-gold-neon/20 hover:shadow-glow-gold;
+  }
+  .gate-disagree {
+    @apply border-slate-600 bg-slate-800/40 text-slate-300
+           hover:border-neon-cyan/50 hover:text-neon-cyan;
+  }
+}

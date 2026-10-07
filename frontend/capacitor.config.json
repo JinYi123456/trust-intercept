@@ -1,0 +1,13 @@
+{
+  "appId": "com.aegissignallab.trustintercept",
+  "appName": "TRUST//INTERCEPT",
+  "type": "project",
+  "webDir": "dist",
+  "separator": "ios",
+  "android": {
+    "allowMixedContent": true
+  },
+  "server": {
+    "androidScheme": "http"
+  }
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRUST//INTERCEPT — Offline</title>
+    <style>
+      body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #1e293b; display: grid; place-items: center; min-height: 100vh; margin: 0; }
+      .card { max-width: 26rem; padding: 2rem; text-align: center; }
+      .badge { display: inline-grid; place-items: center; width: 3rem; height: 3rem; border-radius: 0.75rem; background: #2563eb; color: #fff; font-weight: 700; font-size: 1.25rem; }
+      h1 { font-size: 1.25rem; margin: 1rem 0 0.5rem; }
+      p { font-size: 0.9rem; line-height: 1.5; color: #475569; margin: 0.5rem 0; }
+      button { margin-top: 1rem; padding: 0.6rem 1.2rem; border: 0; border-radius: 0.75rem; background: #2563eb; color: #fff; font-weight: 600; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <span class="badge">A</span>
+      <h1>You are offline</h1>
+      <p>
+        TRUST//INTERCEPT could not reach its investigation backend. Nothing has been analysed, sent,
+        blocked, or filed — and nothing will be without your explicit approval.
+      </p>
+      <p>Reconnect to your network (or start the backend) and try again.</p>
+      <button onclick="location.reload()">Retry</button>
+    </div>
+  </body>
+</html>

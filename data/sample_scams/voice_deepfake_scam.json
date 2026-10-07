@@ -1,0 +1,36 @@
+{
+  "id": "voice_deepfake_scam_001",
+  "name": "Voice deepfake kidnapping/wire-transfer scam (caller-ID spoofing)",
+  "language": "en",
+  "channel": "voice_call",
+  "source": "Synthetic voice-scam case for the audio forensics pipeline (Track 03). The harness synthesizes the WAV from `audio_spec` at run time, so the repository never ships binary audio.",
+  "input_type": "audio",
+  "audio_spec": {
+    "comment": "Deterministic tone composition standing in for a deepfake voicemail: a 220 Hz sine 'voice' bed (steady machine pitch -> robotic_artifact), a clipped 330 Hz overlay (heavy_distortion), and a flat envelope with one unnaturally clean micro-gap (low energy variation + tiny silence ratio -> unnatural_cadence). Pure-python wave module; no external assets or seeds.",
+    "duration_seconds": 3.0,
+    "sample_rate": 16000,
+    "layers": [
+      { "type": "sine", "frequency_hz": 220, "amplitude": 0.55 },
+      { "type": "sine", "frequency_hz": 330, "amplitude": 0.45, "clipped": true },
+      { "type": "envelope", "shape": "flat_with_gap", "gap_fraction": 0.06 }
+    ]
+  },
+  "payload": {
+    "text": "Caller ID showed +65 8116 4472 (spoofed police number). Voicemail transcript: 'We have your son. Wire the transfer now or he stays with us. Do not call the police. Account number and card details for the drop. You have one hour.'",
+    "audio_filename": "kidnap_voicemail.wav"
+  },
+  "expected": {
+    "score": "high",
+    "action_required": true,
+    "modules_expected": ["audio_forensics"],
+    "audio_findings_present": ["robotic_artifact", "unnatural_cadence", "heavy_distortion"],
+    "coercion_cues_present": ["kidnapping_threat", "urgent_wire_transfer", "isolation_instruction", "credential_request"],
+    "cues_absent": [],
+    "notes_field": "local spectral pass flags synthesis artifacts; the transcript/context regex sweep flags the kidnapping, wire-transfer, isolation, and credential script elements; offline mode records an explicit Gemini-unavailable note."
+  },
+  "forbidden_in_output": [
+    "+65 8116 4472"
+  ],
+  "notes": "Phone number is fake but format-valid so the redactor must catch it. Disclosed limitation: the pattern-based redactor cannot redact common words like 'son' (a family relationship is not a PII pattern); the hard assertions are the phone-number redaction and the audio findings.",
+  "expected_placeholders_in_case": []
+}

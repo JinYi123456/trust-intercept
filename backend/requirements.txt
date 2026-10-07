@@ -1,0 +1,17 @@
+# TRUST//INTERCEPT backend — core dependencies
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pydantic>=2.6
+pydantic-settings>=2.2
+httpx>=0.27
+
+# Evidence-normalisation tools
+Pillow>=10.0            # image loading for OCR / QR decode
+pytesseract>=0.3.10     # local OCR (requires the Tesseract binary on PATH)
+pyzbar>=0.1.9           # local QR decoding (requires the zbar shared library)
+zxing-cpp>=2.2          # QR fallback engine, pip-installable wheels
+python-whois>=0.9       # WHOIS domain-age lookups
+
+# Optional — the code degrades gracefully without these:
+# presidio-analyzer>=2.2   # NER-assisted PII redaction (regex always runs)
+# spacy>=3.7               # spaCy PERSON entities as NER fallback

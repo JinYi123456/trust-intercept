@@ -1,0 +1,27 @@
+{
+  "id": "courier_legit_001",
+  "name": "Genuine DHL courier delivery notification",
+  "language": "en",
+  "channel": "sms",
+  "source": "Synthetic case built from the blueprint's Section 8 test plan (Track 03, scam-defence demo).",
+  "input_type": "text",
+  "payload": {
+    "text": "Hi Anna, your DHL delivery D-9823 is arriving today between 2-4 PM. Track it here: https://www.dhl.com/track/D-9823. No action needed."
+  },
+  "expected": {
+    "score": "low",
+    "action_required": false,
+    "modules_expected": ["module_1_phishing", "module_2_link_safety"],
+    "cues_present": [],
+    "cues_absent": [
+      "urgency_pressure",
+      "credential_request",
+      "payment_request",
+      "too_good_to_be_true",
+      "disguised_link"
+    ],
+    "verdict_wording": "The verdict must NOT be a bare 'safe' — the summary/uncertainty text explains that none of the usual red flags were present."
+  },
+  "forbidden_in_output": [],
+  "notes": "Proves the false-positive safeguard: a legitimate notification still gets the full explainable treatment, and dismissal costs one click. If spaCy/Presidio NER is installed, the personal name 'Anna' may be redacted as a PERSON entity — that is expected over-redaction behaviour, not a failure."
+}

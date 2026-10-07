@@ -1,0 +1,23 @@
+/* TrustIntercept Overlay — floating badge styling (content script). */
+
+#trust-intercept-analyze-badge {
+  padding: 6px 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 229, 255, 0.6);
+  background: rgba(11, 17, 32, 0.95);
+  color: #00e5ff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.35);
+  backdrop-filter: blur(8px);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+#trust-intercept-analyze-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.55);
+}

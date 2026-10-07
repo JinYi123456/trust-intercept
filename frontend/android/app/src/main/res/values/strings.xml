@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TRUST//INTERCEPT</string>
+    <string name="title_activity_main">TRUST//INTERCEPT</string>
+    <string name="package_name">com.aegissignallab.trustintercept</string>
+    <string name="custom_url_scheme">com.aegissignallab.trustintercept</string>
+</resources>
