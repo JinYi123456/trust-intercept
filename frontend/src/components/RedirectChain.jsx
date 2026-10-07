@@ -100,15 +100,12 @@ export default function RedirectChain({ chains = [], domains = [] }) {
                     >
                       {hopIndex + 1}
                     </span>
-                    <a
-                      href={hop.url}
-                      target="_blank"
-                      rel="noreferrer noopener"
+                    <div
                       title={hop.url}
-                      className="break-url block text-sm font-medium text-neon-cyan hover:underline"
+                      className="break-url block text-sm font-medium text-neon-cyan"
                     >
                       {truncateUrl(hop.url)}
-                    </a>
+                    </div>
                     <div className="mt-0.5 flex flex-wrap items-center gap-2 font-mono text-[11px] text-slate-500">
                       {hop.status_code && (
                         <span

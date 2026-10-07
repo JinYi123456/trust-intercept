@@ -7,6 +7,7 @@ import ReasoningTree from "../components/ReasoningTree.jsx";
 import RedirectChain from "../components/RedirectChain.jsx";
 import ThreatGauge from "../components/ThreatGauge.jsx";
 import VoiceExplanation from "../components/VoiceExplanation.jsx";
+import EvidencePassport from "../components/EvidencePassport.jsx";
 import { ACTION_LABELS, cx, formatDateTime } from "../lib/ui";
 
 /**
@@ -778,15 +779,34 @@ export default function Review() {
             </section>
           )}
 
-          {/* Redirect chains */}
+          {/* Safe destination inspection — never encourage opening the suspicious destination. */}
           {chains.length > 0 && (
-            <section className="mt-4 glass-panel p-4 sm:p-6">
-              <PanelTitle>MODULE 2 — QR &amp; LINK SAFETY: REDIRECTS · DOMAIN AGE · REPUTATION</PanelTitle>
+            <section className="mt-4 glass-panel border-neon-cyan/30 p-4 sm:p-6">
+              <PanelTitle>MODULE 2 — DESTINATION INSPECTION BEFORE VISIT</PanelTitle>
+              <div className="mt-3 rounded-xl border border-neon-cyan/40 bg-neon-cyan/5 p-4">
+                <div className="flex items-start gap-3">
+                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-neon-cyan/40 bg-neon-cyan/10 font-mono text-sm font-black text-neon-cyan">
+                    ⛨
+                  </div>
+                  <div>
+                    <p className="font-mono text-xs font-black tracking-[0.16em] text-neon-cyan">YOU HAVE NOT OPENED THE SITE</p>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-300">
+                      TRUST//INTERCEPT inspected the URL, redirect chain, domain intelligence and available reputation signals first.
+                      Do not use contact details or links supplied by the suspicious message to verify the claim.
+                    </p>
+                  </div>
+                </div>
+              </div>
               <div className="mt-3">
                 <RedirectChain chains={chains} domains={domains} />
               </div>
             </section>
           )}
+
+          {/* Evidence Passport — provenance snapshot before the human decision. */}
+          <div className="mt-4">
+            <EvidencePassport caseInfo={caseInfo} verdict={verdict} evidence={view?.evidence || []} />
+          </div>
 
           {/* The structural gate: explicit action buttons */}
           <section className="mt-4 glass-panel border-blue-400/30 p-4 sm:p-6">
