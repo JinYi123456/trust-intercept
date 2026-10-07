@@ -306,12 +306,35 @@ def run_debate(redacted_text: str, modules: dict[str, Any], evidence: list[Evide
     # At most ONE optional hosted call per evidence arena.
     judge: Optional[dict[str, Any]] = _llm_judge(redacted_text, transcript, modules)
 
+    red_args = red_final.get("arguments") or []
+    blue_args = blue_final.get("arguments") or []
+    verifier_final = transcript["rounds"][-1].get("verifier") or {}
+
+    # Phase 7: turn the debate into an auditable challenge matrix. Each side
+    # exposes what it is actually relying on, while the verifier states what
+    # independent evidence could overturn the current position. This is data
+    # for the UI, not a second verdict engine.
+    red_techniques = {str(a.get("technique", "")) for a in red_args if isinstance(a, dict)}
+    blue_techniques = {str(a.get("technique", "")) for a in blue_args if isinstance(a, dict)}
+    shared_techniques = sorted(red_techniques & blue_techniques - {""})
+    conflict_count = len(red_args) + len(blue_args)
+    if red_vote_label != blue_vote_label:
+        conflict_count += 1
+
     transcript["resolution"] = {
         "red_vote": red_vote_label,
         "blue_vote": blue_vote_label,
         "debate_floor_severity": debate_floor,
         "consensus": consensus,
         "judge_used": judge is not None,
+        "challenge_matrix": {
+            "red_evidence_count": len(red_args),
+            "blue_evidence_count": len(blue_args),
+            "shared_techniques": shared_techniques,
+            "conflict_count": conflict_count,
+            "verifier_tests": verifier_final.get("tests", []),
+            "overturn_condition": verifier_final.get("overturn_condition", "Independent trusted evidence contradicts the suspicious request."),
+        },
         "policy": (
             "The debate may RAISE the final risk above the rule-based module floor; it may "
             "never lower it. Unresolved contests keep the higher vote and are disclosed in "

@@ -89,6 +89,12 @@ def test_debate_transcript_logged_with_two_rounds(client):
     assert resolution["consensus"] in (
         "unanimous_scam", "unanimous_safe", "leaning_scam", "leaning_safe", "contested"
     )
+    matrix = resolution["challenge_matrix"]
+    assert matrix["red_evidence_count"] >= 1
+    assert matrix["blue_evidence_count"] >= 1
+    assert matrix["conflict_count"] >= 0
+    assert matrix["verifier_tests"]
+    assert matrix["overturn_condition"]
 
 
 def test_debate_raises_but_never_lowers_rule_floor(client):

@@ -9,6 +9,7 @@ import ThreatGauge from "../components/ThreatGauge.jsx";
 import VoiceExplanation from "../components/VoiceExplanation.jsx";
 import EvidencePassport from "../components/EvidencePassport.jsx";
 import ManipulationGraph from "../components/ManipulationGraph.jsx";
+import EvidenceChallengeMatrix from "../components/EvidenceChallengeMatrix.jsx";
 import { ACTION_LABELS, cx, formatDateTime } from "../lib/ui";
 
 /**
@@ -617,6 +618,10 @@ export default function Review() {
                   )}
                 </article>
               ))}
+            </div>
+
+            <div className="mt-3">
+              <EvidenceChallengeMatrix debate={debateEvidence} />
             </div>
 
             <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_1.2fr]">
