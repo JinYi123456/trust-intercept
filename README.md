@@ -41,3 +41,10 @@ Generated environments, secrets, local databases, build outputs, caches and pack
 ## Status
 
 This repository is the clean TRUST//INTERCEPT rebuild of the legacy prototype. The next phases replace the old dashboard flow with the Interception Room, Evidence Graph, Adversarial Evidence Arena, Counterfactual Verification and Decision Safety metrics.
+
+
+## LLM provider strategy
+
+TRUST//INTERCEPT is provider-agnostic. With `LLM_PROVIDER=auto`, the backend tries **Gonka → Featherless → Gemini**, then keeps running on the deterministic local engine if no hosted provider is available. This lets the project use redeemed promotional/free credits without making the competition demo depend on a paid service. See `docs/LLM_PROVIDER_STRATEGY.md`.
+
+**Target:** 0–2 hosted LLM calls per case. Deterministic Hunter/Skeptic/Verifier logic runs locally; hosted inference is reserved for high-value synthesis.

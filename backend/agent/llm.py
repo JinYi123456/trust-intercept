@@ -54,35 +54,68 @@ def _english_only(text: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def _call_anthropic(prompt: str, system: str) -> str:
+def _call_gonka(prompt: str, system: str) -> str:
     settings = get_settings()
-    if not settings.anthropic_api_key:
-        raise LlmUnavailable("No ANTHROPIC_API_KEY configured.")
+    if not settings.gonka_api_key:
+        raise LlmUnavailable("No GONKA_API_KEY configured.")
     body = {
-        "model": settings.anthropic_model,
+        "model": settings.gonka_model,
         "max_tokens": settings.llm_max_tokens,
         "system": system,
         "messages": [{"role": "user", "content": prompt}],
     }
     try:
         response = httpx.post(
-            settings.anthropic_base_url,
+            settings.gonka_base_url,
             headers={
-                "x-api-key": settings.anthropic_api_key,
-                "anthropic-version": settings.anthropic_version,
+                "x-api-key": settings.gonka_api_key,
+                "anthropic-version": "2023-06-01",
                 "content-type": "application/json",
             },
             json=body,
             timeout=settings.llm_timeout_seconds,
         )
     except Exception as exc:
-        raise LlmUnavailable(f"Anthropic request failed: {type(exc).__name__}: {exc}") from exc
+        raise LlmUnavailable(f"Gonka request failed: {type(exc).__name__}: {exc}") from exc
     if response.status_code != 200:
-        raise LlmUnavailable(f"Anthropic returned HTTP {response.status_code}.")
+        raise LlmUnavailable(f"Gonka returned HTTP {response.status_code}.")
     try:
         text = response.json()["content"][0]["text"]
     except Exception as exc:
-        raise LlmUnavailable(f"Could not parse the Anthropic response: {exc}") from exc
+        raise LlmUnavailable(f"Could not parse the Gonka response: {exc}") from exc
+    return _english_only(text)
+
+
+def _call_featherless(prompt: str, system: str) -> str:
+    settings = get_settings()
+    if not settings.featherless_api_key:
+        raise LlmUnavailable("No FEATHERLESS_API_KEY configured.")
+    body = {
+        "model": settings.featherless_model,
+        "max_tokens": settings.llm_max_tokens,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ],
+    }
+    try:
+        response = httpx.post(
+            settings.featherless_base_url,
+            headers={
+                "Authorization": f"Bearer {settings.featherless_api_key}",
+                "content-type": "application/json",
+            },
+            json=body,
+            timeout=settings.llm_timeout_seconds,
+        )
+    except Exception as exc:
+        raise LlmUnavailable(f"Featherless request failed: {type(exc).__name__}: {exc}") from exc
+    if response.status_code != 200:
+        raise LlmUnavailable(f"Featherless returned HTTP {response.status_code}.")
+    try:
+        text = response.json()["choices"][0]["message"]["content"]
+    except Exception as exc:
+        raise LlmUnavailable(f"Could not parse the Featherless response: {exc}") from exc
     return _english_only(text)
 
 
@@ -122,12 +155,14 @@ def llm_status() -> dict[str, Any]:
     settings = get_settings()
     return {
         "provider_setting": settings.llm_provider,
-        "anthropic_configured": bool(settings.anthropic_api_key),
-        "anthropic_model": settings.anthropic_model,
+        "gonka_configured": bool(settings.gonka_api_key),
+        "gonka_model": settings.gonka_model,
+        "featherless_configured": bool(settings.featherless_api_key),
+        "featherless_model": settings.featherless_model,
         "gemini_configured": bool(settings.gemini_api_key),
         "gemini_model": settings.gemini_model,
         "template_mode": settings.llm_provider == "none"
-        or not (settings.anthropic_api_key or settings.gemini_api_key),
+        or not (settings.gonka_api_key or settings.featherless_api_key or settings.gemini_api_key),
     }
 
 
@@ -155,20 +190,23 @@ def generate(
 
     errors: list[str] = []
     order: list[str]
-    if settings.llm_provider == "anthropic":
-        order = ["anthropic"]
-    elif settings.llm_provider == "gemini":
-        order = ["gemini"]
+    if settings.llm_provider in {"gonka", "featherless", "gemini"}:
+        order = [settings.llm_provider]
     elif settings.llm_provider == "none":
         order = []
-    else:  # auto: Claude primary, Gemini fallback
-        order = ["anthropic", "gemini"]
+    else:  # auto: use promo/free pools first, then Gemini free tier
+        order = ["gonka", "featherless", "gemini"]
 
     raw_text = ""
     used_provider = ""
     for provider in order:
         try:
-            raw_text = _call_anthropic(prompt, system) if provider == "anthropic" else _call_gemini(prompt, system)
+            if provider == "gonka":
+                raw_text = _call_gonka(prompt, system)
+            elif provider == "featherless":
+                raw_text = _call_featherless(prompt, system)
+            else:
+                raw_text = _call_gemini(prompt, system)
             used_provider = provider
             break
         except LlmUnavailable as exc:

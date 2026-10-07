@@ -10,7 +10,7 @@ ANTHROPIC_API_KEY            Claude (Sonnet) primary LLM (leave empty to run wit
 ANTHROPIC_MODEL              default: claude-sonnet-4-5
 GEMINI_API_KEY               Gemini fallback LLM
 GEMINI_MODEL                 default: gemini-2.5-flash
-LLM_PROVIDER                 auto | anthropic | gemini | none
+LLM_PROVIDER                 auto | gonka | featherless | gemini | none
 VIRUSTOTAL_API_KEY           URL reputation (free tier)
 SAFE_BROWSING_API_KEY        Google Safe Browsing (free tier)
 GOOGLE_VISION_API_KEY        Cloud OCR fallback (opt-in)
@@ -50,12 +50,15 @@ class Settings(BaseSettings):
         "http://localhost:5175,http://127.0.0.1:5175"
     )
 
-    # --- LLM providers (Claude Sonnet primary, Gemini fallback) ------------
-    llm_provider: str = "auto"  # auto | anthropic | gemini | none
-    anthropic_api_key: str = ""
-    anthropic_model: str = "claude-sonnet-4-5"
-    anthropic_base_url: str = "https://api.anthropic.com/v1/messages"
-    anthropic_version: str = "2023-06-01"
+    # --- LLM providers (free/promo credits first; offline always available) ---
+    # auto order: Gonka -> Featherless -> Gemini -> deterministic local engine
+    llm_provider: str = "auto"  # auto | gonka | featherless | gemini | none
+    gonka_api_key: str = ""
+    gonka_model: str = "MiniMaxAI/MiniMax-M2.7"
+    gonka_base_url: str = "https://api.gonkarouter.io/v1/messages"
+    featherless_api_key: str = ""
+    featherless_model: str = "Qwen/Qwen2.5-7B-Instruct"
+    featherless_base_url: str = "https://api.featherless.ai/v1/chat/completions"
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
     gemini_audio_model: str = "gemini-2.5-flash"  # native multimodal audio analysis
