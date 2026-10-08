@@ -11,6 +11,7 @@ import EvidencePassport from "../components/EvidencePassport.jsx";
 import ManipulationGraph from "../components/ManipulationGraph.jsx";
 import EvidenceChallengeMatrix from "../components/EvidenceChallengeMatrix.jsx";
 import CounterfactualVerification from "../components/CounterfactualVerification.jsx";
+import CaseReplay from "../components/CaseReplay.jsx";
 import { ACTION_LABELS, cx, formatDateTime } from "../lib/ui";
 
 /**
@@ -813,6 +814,8 @@ export default function Review() {
           <div className="mt-4">
             <EvidencePassport caseInfo={caseInfo} verdict={verdict} evidence={view?.evidence || []} />
           </div>
+
+          <CaseReplay provenance={view?.provenance} />
 
           {/* The structural gate: explicit action buttons */}
           <section className="mt-4 glass-panel border-blue-400/30 p-4 sm:p-6">

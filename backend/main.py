@@ -56,6 +56,16 @@ app.include_router(report.router)
 app.include_router(metrics.router)
 
 
+@app.get("/case/{case_id}/replay", tags=["audit"], summary="Replay the persisted redacted investigation without re-running tools")
+def replay_case(case_id: str) -> dict:
+    from fastapi import HTTPException
+    from backend.agent.provenance import build_case_provenance
+    try:
+        return build_case_provenance(case_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
 @app.get("/health", tags=["system"], summary="Liveness + configuration status")
 def health() -> dict:
     return {

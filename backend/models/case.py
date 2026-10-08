@@ -323,3 +323,4 @@ class CaseView(BaseModel):
     decisions: list[Decision] = []
     report: Optional[ReportBundle] = None
     quiz: Optional[Quiz] = None
+    provenance: dict[str, Any] = {}

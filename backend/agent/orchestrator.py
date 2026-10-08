@@ -23,6 +23,7 @@ from backend.agent import llm
 from backend.agent.debate import run_debate
 from backend.agent.decision_defence import build_defence_plan
 from backend.agent.counterfactual import build_counterfactual_verification
+from backend.agent.provenance import build_case_provenance
 from backend.agent.modules import awareness_coach, link_safety, phishing_detector, scam_reporter
 from backend.agent.router import MODULE_1, MODULE_2, route_case
 from backend.config import get_settings
@@ -636,6 +637,7 @@ class Orchestrator:
             decisions=decisions,
             report=report,
             quiz=quiz,
+            provenance=build_case_provenance(case_id),
         )
 
 
