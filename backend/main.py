@@ -30,6 +30,7 @@ sent, or filed without an explicit human decision on `/case/{id}/decision`.
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     db.init_db()
+    print_startup_banner()
     yield
 
 
@@ -82,6 +83,43 @@ def health() -> dict:
         "redirect_max_hops": settings.redirect_max_hops,
         "ocr_cloud_fallback": settings.ocr_cloud_fallback,
     }
+
+
+def print_startup_banner() -> None:
+    """Demo-proofing: print which LLM provider is LIVE vs FALLBACK at boot.
+
+    Called from the lifespan handler so it runs once when uvicorn starts (and
+    in every TestClient context, where it is harmless). Secrets are never
+    printed — only booleans and model names.
+    """
+    status = llm_status()
+    if status["template_mode"]:
+        print("=" * 64)
+        print("  [LLM] DETERMINISTIC FALLBACK MODE - no provider will be called.")
+        print("        Verdicts are rule-based; demo stays fully offline.")
+        print("=" * 64)
+        return
+
+    configured = [
+        name
+        for name, key in (
+            ("gonka", status["gonka_configured"]),
+            ("featherless", status["featherless_configured"]),
+            ("gemini", status["gemini_configured"]),
+        )
+        if key
+    ]
+    model = ""
+    for provider in ("gonka", "featherless", "gemini"):
+        if status[f"{provider}_configured"]:
+            model = status.get(f"{provider}_model", "")
+            break
+    print("=" * 64)
+    print(f"  [LLM] LIVE: {', '.join(configured)} (setting: {status['provider_setting']})")
+    if model:
+        print(f"  [LLM] model: {model}")
+    print("  [LLM] fallback: deterministic template engine on provider failure")
+    print("=" * 64)
 
 
 @app.get("/ready", tags=["system"], summary="Readiness check for deployment and demo startup")

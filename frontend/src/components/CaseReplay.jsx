@@ -46,7 +46,7 @@ export default function CaseReplay({ provenance }) {
           ["DECISIONS", provenance.decision_count],
         ].map(([label, value]) => (
           <div key={label} className="rounded-xl border border-slate-800 bg-space-950/70 p-3">
-            <p className="font-mono text-[9px] font-bold tracking-[0.18em] text-slate-600">{label}</p>
+            <p className="font-mono text-[9px] font-bold tracking-[0.18em] text-faint">{label}</p>
             <p className="mt-1 font-mono text-xl font-black text-slate-100">{value}</p>
           </div>
         ))}
@@ -54,7 +54,7 @@ export default function CaseReplay({ provenance }) {
 
       <div className="mt-4 rounded-xl border border-slate-800 bg-space-950/70 p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="font-mono text-[9px] font-bold tracking-[0.18em] text-slate-600">MANIFEST INTEGRITY · SHA-256</span>
+          <span className="font-mono text-[9px] font-bold tracking-[0.18em] text-faint">MANIFEST INTEGRITY · SHA-256</span>
           <span className="break-all font-mono text-[10px] text-neon-cyan">{provenance.integrity_hash}</span>
         </div>
       </div>
@@ -62,7 +62,7 @@ export default function CaseReplay({ provenance }) {
       <div className="mt-4 space-y-2">
         {groups.map(([stage, items]) => (
           <div key={stage} className="overflow-hidden rounded-xl border border-slate-800 bg-space-950/60">
-            <div className="border-b border-slate-800 px-3 py-2 font-mono text-[9px] font-black tracking-[0.18em] text-slate-500">
+            <div className="border-b border-slate-800 px-3 py-2 font-mono text-[9px] font-black tracking-[0.18em] text-muted">
               {stageLabels[stage] || stage}
             </div>
             {items.map((step) => (
@@ -77,7 +77,7 @@ export default function CaseReplay({ provenance }) {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-200">{step.event}</span>
-                  <span className="mt-0.5 block text-[10px] text-slate-600">actor: {step.actor}</span>
+                  <span className="mt-0.5 block text-[10px] text-faint">actor: {step.actor}</span>
                 </span>
                 <span className="font-mono text-[9px] text-neon-green">✓</span>
               </button>
@@ -90,18 +90,18 @@ export default function CaseReplay({ provenance }) {
         <div className="mt-3 rounded-xl border border-neon-cyan/25 bg-neon-cyan/5 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="font-mono text-[10px] font-black tracking-[0.18em] text-neon-cyan">STEP {selected.sequence} · {selected.event}</p>
-            <span className="font-mono text-[9px] text-slate-500">{selected.actor}</span>
+            <span className="font-mono text-[9px] text-muted">{selected.actor}</span>
           </div>
           <pre className="mt-3 max-h-52 overflow-auto whitespace-pre-wrap break-words font-mono text-[10px] leading-relaxed text-slate-400">
             {JSON.stringify(selected.details || {}, null, 2)}
           </pre>
           {selected.evidence_fingerprint && (
-            <p className="mt-3 break-all font-mono text-[9px] text-slate-600">evidence fingerprint: {selected.evidence_fingerprint}</p>
+            <p className="mt-3 break-all font-mono text-[9px] text-faint">evidence fingerprint: {selected.evidence_fingerprint}</p>
           )}
         </div>
       )}
 
-      <p className="mt-3 text-[10px] leading-relaxed text-slate-600">{provenance.safety_boundary}</p>
+      <p className="mt-3 text-[10px] leading-relaxed text-faint">{provenance.safety_boundary}</p>
     </section>
   );
 }

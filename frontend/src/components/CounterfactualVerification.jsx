@@ -22,19 +22,19 @@ export default function CounterfactualVerification({ verification }) {
         <div>
           <p className="font-mono text-[10px] font-bold tracking-[0.18em] text-neon-green">COUNTERFACTUAL VERIFICATION ENGINE</p>
           <h3 className="mt-1 text-base font-black text-slate-100">What would prove this claim is legitimate?</h3>
-          <p className="mt-1 max-w-2xl text-xs leading-relaxed text-slate-500">
+          <p className="mt-1 max-w-2xl text-xs leading-relaxed text-muted">
             The engine defines independent evidence to look for. It does not contact the sender or open the suspicious destination.
           </p>
         </div>
         <div className="text-right">
           <StateBadge state={verification.overall_state} />
-          <p className="mt-1 font-mono text-[8px] tracking-wider text-slate-600">HUMAN VERIFICATION REQUIRED</p>
+          <p className="mt-1 font-mono text-[8px] tracking-wider text-faint">HUMAN VERIFICATION REQUIRED</p>
         </div>
       </div>
 
       <div className="mt-4 grid gap-3 lg:grid-cols-[1.1fr_.9fr]">
         <div className="rounded-lg border border-slate-800 bg-space-950/70 p-3">
-          <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-slate-500">CLAIM UNDER TEST</p>
+          <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-muted">CLAIM UNDER TEST</p>
           <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-200">{verification.claim_under_test}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {(verification.independent_sources || []).map((source) => (
@@ -44,7 +44,7 @@ export default function CounterfactualVerification({ verification }) {
         </div>
 
         <div className="rounded-lg border border-slate-800 bg-space-950/70 p-3">
-          <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-slate-500">EXPECTED IF LEGITIMATE</p>
+          <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-muted">EXPECTED IF LEGITIMATE</p>
           <ul className="mt-2 space-y-2 text-xs leading-relaxed text-slate-300">
             {(verification.expected_evidence || []).map((item, index) => (
               <li key={`${index}-${item}`} className="flex gap-2"><span className="font-mono font-bold text-neon-green">0{index + 1}</span><span>{item}</span></li>
@@ -55,7 +55,7 @@ export default function CounterfactualVerification({ verification }) {
 
       <div className="mt-3 rounded-lg border border-slate-800 bg-space-950/70 p-3">
         <div className="flex items-center justify-between gap-2">
-          <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-slate-500">EVIDENCE ACTUALLY FOUND</p>
+          <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-muted">EVIDENCE ACTUALLY FOUND</p>
           <button type="button" onClick={() => setShowDetails((v) => !v)} className="font-mono text-[9px] font-bold tracking-wider text-neon-cyan hover:underline">
             {showDetails ? "HIDE DETAILS" : "SHOW DETAILS"}
           </button>
@@ -67,7 +67,7 @@ export default function CounterfactualVerification({ verification }) {
                 <span className="text-xs font-semibold text-slate-200">{finding.claim}</span>
                 <StateBadge state={finding.state} />
               </div>
-              <p className="mt-1 text-[10px] text-slate-500">Source: {finding.source}</p>
+              <p className="mt-1 text-[10px] text-muted">Source: {finding.source}</p>
               {showDetails && <p className="mt-2 text-xs leading-relaxed text-slate-400">{(finding.actual_evidence || []).join(" ")}</p>}
             </div>
           ))}
@@ -78,7 +78,7 @@ export default function CounterfactualVerification({ verification }) {
         <div className="rounded-lg border border-gold-neon/25 bg-gold-neon/5 p-3">
           <p className="font-mono text-[9px] font-bold tracking-wider text-gold-neon">RISK IMPACT</p>
           <p className="mt-1 text-xs font-semibold text-slate-200">{verification.risk_impact}</p>
-          <p className="mt-1 text-[10px] text-slate-500">Risk delta: {verification.risk_delta > 0 ? "+" : ""}{verification.risk_delta}. No automatic lowering from independent checks.</p>
+          <p className="mt-1 text-[10px] text-muted">Risk delta: {verification.risk_delta > 0 ? "+" : ""}{verification.risk_delta}. No automatic lowering from independent checks.</p>
         </div>
         <div className="rounded-lg border border-neon-cyan/25 bg-neon-cyan/5 p-3">
           <p className="font-mono text-[9px] font-bold tracking-wider text-neon-cyan">SAFE VERIFICATION</p>

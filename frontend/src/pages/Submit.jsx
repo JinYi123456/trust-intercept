@@ -129,12 +129,12 @@ export default function Submit() {
       {/* Cyber hero */}
       <div className="mb-6 text-center sm:mb-8">
         <h1 className="text-2xl font-black tracking-tight text-slate-100 sm:text-3xl">
-          Intercept a suspicious <span className="neon-cyan-text">decision</span>
+          Check a suspicious message
         </h1>
-        <p className="mx-auto mt-2 max-w-xl text-sm text-slate-400 sm:text-base">
-          Paste a message, drop a link, scan a QR code live, upload a screenshot, or submit a
-          suspicious voice call. TRUST//INTERCEPT investigates the evidence, challenges its own conclusion, maps the manipulation chain, and
-          <strong className="text-slate-200">proposes</strong> the safest next decision — you decide.
+        <p className="mx-auto mt-2 max-w-xl text-sm text-slate-300 sm:text-base">
+          Paste a message, drop a link, scan a QR code, upload a screenshot, or upload a suspicious
+          voice call. TRUST//INTERCEPT checks the evidence and explains what it found in plain
+          language — <strong className="text-slate-100">you decide</strong> what to do next.
         </p>
       </div>
 
@@ -152,14 +152,14 @@ export default function Submit() {
                 "rounded-lg px-2 py-2 font-mono text-[11px] font-bold tracking-wider transition sm:text-xs",
                 tab === item.id
                   ? "bg-neon-cyan/15 text-neon-cyan ring-1 ring-neon-cyan/50 shadow-glow-cyan-soft"
-                  : "text-slate-500 hover:text-slate-300"
+                  : "text-muted hover:text-slate-300"
               )}
             >
               {item.label.toUpperCase()}
             </button>
           ))}
         </div>
-        <p className="mt-2 text-xs text-slate-500">{TABS.find((t) => t.id === tab)?.hint}</p>
+        <p className="mt-2 text-xs text-muted">{TABS.find((t) => t.id === tab)?.hint}</p>
 
         <div className="mt-4">
           {tab === "text" && (
@@ -171,7 +171,7 @@ export default function Submit() {
                 onChange={(event) => setText(event.target.value)}
                 rows={7}
                 placeholder="Paste the full SMS or email text here…"
-                className="w-full resize-y rounded-lg border border-slate-700/80 bg-space-950/70 p-3 font-mono text-sm text-slate-200 placeholder:text-slate-600 focus:border-neon-cyan/60 focus:outline-none focus:ring-2 focus:ring-neon-cyan/25"
+                className="w-full resize-y rounded-lg border border-slate-700/80 bg-space-950/70 p-3 font-mono text-sm text-slate-200 placeholder:text-faint focus:border-neon-cyan/60 focus:outline-none focus:ring-2 focus:ring-neon-cyan/25"
               />
               <div className="mt-2 flex flex-wrap gap-2">
                 <button
@@ -201,9 +201,9 @@ export default function Submit() {
                 value={url}
                 onChange={(event) => setUrl(event.target.value)}
                 placeholder="https://example.com/track?parcel=…"
-                className="w-full rounded-lg border border-slate-700/80 bg-space-950/70 p-3 font-mono text-sm text-slate-200 placeholder:text-slate-600 focus:border-neon-cyan/60 focus:outline-none focus:ring-2 focus:ring-neon-cyan/25"
+                className="w-full rounded-lg border border-slate-700/80 bg-space-950/70 p-3 font-mono text-sm text-slate-200 placeholder:text-faint focus:border-neon-cyan/60 focus:outline-none focus:ring-2 focus:ring-neon-cyan/25"
               />
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-2 text-xs text-muted">
                 TRUST//INTERCEPT traces the redirect chain (≤5 hops), checks domain age and reputation —
                 before you ever open it.
               </p>
@@ -223,7 +223,7 @@ export default function Submit() {
                       "flex cursor-pointer items-center justify-center rounded-lg border px-3 py-2 font-mono text-[11px] font-bold tracking-wider transition",
                       imageKind === option.id
                         ? "border-neon-cyan/60 bg-neon-cyan/10 text-neon-cyan shadow-glow-cyan-soft"
-                        : "border-slate-700/80 text-slate-500 hover:bg-slate-800/50"
+                        : "border-slate-700/80 text-muted hover:bg-slate-800/50"
                     )}
                   >
                     <input
@@ -253,7 +253,7 @@ export default function Submit() {
                   <>
                     <span className="text-3xl" aria-hidden="true">🖼️</span>
                     <span className="mt-2 text-sm font-medium text-slate-300">Click to choose an image</span>
-                    <span className="mt-1 text-xs text-slate-500">
+                    <span className="mt-1 text-xs text-muted">
                       Screenshots are OCR&apos;d locally; QR codes are decoded offline.
                     </span>
                   </>
@@ -267,7 +267,7 @@ export default function Submit() {
                 />
               </label>
               {file && (
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-muted">
                   Selected: <span className="font-medium text-slate-300">{file.name}</span>
                 </p>
               )}
@@ -342,7 +342,7 @@ export default function Submit() {
               <span className="mt-2 text-sm font-medium text-slate-300">
                 {audioFile ? "Replace audio file" : "Click to upload a voicemail / call recording"}
               </span>
-              <span className="mt-1 text-xs text-slate-500">
+              <span className="mt-1 text-xs text-muted">
                 .mp3 / .wav / .m4a / .ogg · max 20 MB · analysed locally first, audio never persisted
               </span>
               <input
@@ -362,7 +362,7 @@ export default function Submit() {
                 onChange={(event) => setText(event.target.value)}
                 rows={3}
                 placeholder="Optional context: what did the caller claim? e.g. 'Caller said my son was kidnapped and demanded a wire transfer' — helps the coercion scan."
-                className="w-full resize-y rounded-lg border border-slate-700/80 bg-space-950/70 p-3 font-mono text-xs text-slate-200 placeholder:text-slate-600 focus:border-neon-cyan/60 focus:outline-none focus:ring-2 focus:ring-neon-cyan/25"
+                className="w-full resize-y rounded-lg border border-slate-700/80 bg-space-950/70 p-3 font-mono text-xs text-slate-200 placeholder:text-faint focus:border-neon-cyan/60 focus:outline-none focus:ring-2 focus:ring-neon-cyan/25"
               />
             </div>
           </div>
@@ -385,7 +385,7 @@ export default function Submit() {
                     key={label}
                     className={cx(
                       "flex items-center gap-2 font-mono text-[11px] tracking-wider transition",
-                      index < stage ? "text-neon-green" : index === stage ? "text-neon-cyan" : "text-slate-600"
+                      index < stage ? "text-neon-green" : index === stage ? "text-neon-cyan" : "text-faint"
                     )}
                   >
                     <span
@@ -415,7 +415,7 @@ export default function Submit() {
                 "mt-5 w-full rounded-xl px-4 py-3 font-mono text-sm font-black tracking-[0.18em] transition",
                 canSubmit
                   ? "border border-neon-cyan/60 bg-neon-cyan/15 text-neon-cyan shadow-glow-cyan-soft hover:bg-neon-cyan/25"
-                  : "cursor-not-allowed border border-slate-700/80 bg-slate-900/60 text-slate-600"
+                  : "cursor-not-allowed border border-slate-700/80 bg-slate-900/60 text-faint"
               )}
             >
               ⚡ INVESTIGATE WITH TRUST//INTERCEPT
@@ -424,9 +424,10 @@ export default function Submit() {
         )}
       </form>
 
-      <LiveMetricsDashboard />
+      {/* Telemetry is secondary to the core decision-defence loop — collapsed. */}
+      <LiveMetricsDashboard defaultOpen={false} />
 
-      <p className="mt-4 text-center font-mono text-[11px] tracking-wider text-slate-500">
+      <p className="mt-4 text-center font-mono text-[11px] tracking-wider text-muted">
         NOTHING IS SENT, BLOCKED, OR FILED AUTOMATICALLY. EVERY ACTION REQUIRES YOUR EXPLICIT APPROVAL.
       </p>
     </div>

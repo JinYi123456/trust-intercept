@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/client.js";
+import { Loading, ErrorState } from "../components/AsyncStates.jsx";
 import { cx } from "../lib/ui";
 
 /**
@@ -63,26 +64,19 @@ export default function Coach() {
     setSaveError(null);
   }
 
-  if (loading) {
-    return (
-      <div className="py-16 text-center">
-        <span className="animate-pulse-glow font-mono text-xs tracking-[0.3em] text-neon-cyan">
-          BUILDING YOUR QUIZ FROM THE DETECTED PATTERN…
-        </span>
-      </div>
-    );
-  }
+  if (loading) return <Loading label="BUILDING YOUR QUIZ FROM THE DETECTED PATTERN…" />;
 
   if (error) {
     return (
-      <div className="mx-auto max-w-2xl">
-        <div role="alert" className="glass-panel border-neon-red/40 p-4 text-sm text-red-200">
-          {error}
-        </div>
-        <Link to={`/case/${caseId}/review`} className="mt-4 inline-block font-mono text-xs tracking-wider text-neon-cyan hover:underline">
-          ← BACK TO REVIEW
-        </Link>
-      </div>
+      <ErrorState
+        message={error}
+        onRetry={() => window.location.reload()}
+        backLink={
+          <Link to={`/case/${caseId}/review`} className="rounded-lg border border-slate-700 bg-space-900 px-4 py-2 text-sm font-bold text-slate-300 transition hover:text-neon-cyan">
+            ← BACK TO REVIEW
+          </Link>
+        }
+      />
     );
   }
 
@@ -123,7 +117,7 @@ export default function Coach() {
             You scored <span className="neon-cyan-text">{score} / {total}</span>
           </h1>
           <p className="mt-2 text-sm text-slate-400">{message}</p>
-          <p className="mt-1 font-mono text-xs tracking-wider text-slate-500">
+          <p className="mt-1 font-mono text-xs tracking-wider text-muted">
             PATTERN TRAINED: <span className="text-neon-cyan">{quiz.pattern_name}</span>
           </p>
 
@@ -135,17 +129,17 @@ export default function Coach() {
             <div className="mt-5 rounded-xl border border-neon-cyan/30 bg-neon-cyan/5 p-4 text-left">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="font-mono text-[10px] font-bold tracking-[0.2em] text-slate-500">PATTERN MASTERY</p>
+                  <p className="font-mono text-[10px] font-bold tracking-[0.2em] text-muted">PATTERN MASTERY</p>
                   <p className="mt-1 text-lg font-black uppercase tracking-wider text-neon-cyan">{mastery.mastery_band}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-mono text-xs text-slate-400">{Math.round(mastery.accuracy * 100)}% lifetime accuracy</p>
-                  <p className="font-mono text-[10px] text-slate-500">{mastery.attempts} attempt{mastery.attempts === 1 ? "" : "s"} · {mastery.questions_seen} questions</p>
+                  <p className="font-mono text-[10px] text-muted">{mastery.attempts} attempt{mastery.attempts === 1 ? "" : "s"} · {mastery.questions_seen} questions</p>
                 </div>
               </div>
               {mastery.next_focus?.length > 0 && (
                 <div className="mt-3">
-                  <p className="font-mono text-[10px] tracking-wider text-slate-500">NEXT TRAINING FOCUS</p>
+                  <p className="font-mono text-[10px] tracking-wider text-muted">NEXT TRAINING FOCUS</p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {mastery.next_focus.map((focus) => (
                       <span key={focus} className="rounded-full border border-gold-neon/40 bg-gold-neon/5 px-2.5 py-1 font-mono text-[10px] text-amber-200">{focus}</span>
@@ -155,11 +149,15 @@ export default function Coach() {
               )}
             </div>
           )}
-          {saveError && <p className="mt-3 text-xs text-amber-200">Learning result could not be synced: {saveError}</p>}
+          {saveError && (
+            <div role="alert" className="mt-3 rounded-lg border border-gold-neon/50 bg-gold-neon/10 p-3 text-sm text-amber-100">
+              ⚠️ Learning result could not be synced: {saveError} — your score above is still valid.
+            </div>
+          )}
 
           {missed.length > 0 && (
             <div className="mt-6 space-y-3 text-left">
-              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
                 REVIEW YOUR MISSES
               </p>
               {missed.map((answer, answerIndex) => {
@@ -233,7 +231,7 @@ export default function Coach() {
           </span>
         )}
         <h1 className="mt-3 text-2xl font-black text-slate-100">Quick awareness check</h1>
-        <p className="mt-1 font-mono text-xs tracking-wider text-slate-500">
+        <p className="mt-1 font-mono text-xs tracking-wider text-muted">
           QUESTION {index + 1} OF {total}
         </p>
         <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-space-800">
@@ -308,7 +306,7 @@ export default function Coach() {
               "rounded-xl px-6 py-3 font-mono text-sm font-black tracking-wider transition",
               answered
                 ? "border border-neon-cyan/60 bg-neon-cyan/15 text-neon-cyan shadow-glow-cyan-soft hover:bg-neon-cyan/25"
-                : "cursor-not-allowed border border-slate-800 bg-space-950 text-slate-600"
+                : "cursor-not-allowed border border-slate-800 bg-space-950 text-faint"
             )}
           >
             {index + 1 >= total ? "SEE MY SCORE" : "NEXT QUESTION →"}
@@ -316,7 +314,7 @@ export default function Coach() {
         </div>
       </div>
 
-      <p className="mt-4 text-center font-mono text-[11px] tracking-wider text-slate-500">
+      <p className="mt-4 text-center font-mono text-[11px] tracking-wider text-muted">
         This quiz is a reinforcement aid built from the pattern just detected — not a certified
         training curriculum. Only pattern-level quiz outcomes are stored; no answer text or PII is retained.
       </p>

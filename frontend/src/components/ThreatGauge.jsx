@@ -90,13 +90,13 @@ export default function ThreatGauge({ score = "low", confidence, actionRequired 
 
         <div className="grid grid-cols-2 gap-2 font-mono text-xs sm:grid-cols-1">
           <div className="glass-sub px-3 py-2">
-            <span className="block text-slate-500">CONFIDENCE BAND</span>
+            <span className="block text-muted">CONFIDENCE BAND</span>
             <span className={cx("text-sm font-bold", config.text)}>
               {String(confidence || "—").toUpperCase()}
             </span>
           </div>
           <div className="glass-sub px-3 py-2">
-            <span className="block text-slate-500">MODE</span>
+            <span className="block text-muted">MODE</span>
             <span className="text-sm font-bold text-slate-200">
               {actionRequired ? "DEFEND" : "MONITOR"}
             </span>

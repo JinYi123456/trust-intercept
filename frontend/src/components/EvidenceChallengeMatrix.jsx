@@ -9,10 +9,10 @@ function EvidenceRow({ side, argument, index }) {
         <div className="min-w-0">
           <p className="text-xs font-semibold leading-relaxed text-slate-200">{argument?.claim || "Unspecified argument"}</p>
           <div className="mt-1 flex flex-wrap gap-1.5">
-            <span className="rounded border border-slate-700 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider text-slate-500">{argument?.technique || "evidence"}</span>
-            <span className="rounded border border-slate-700 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider text-slate-500">{argument?.strength || "unrated"}</span>
+            <span className="rounded border border-slate-700 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider text-muted">{argument?.technique || "evidence"}</span>
+            <span className="rounded border border-slate-700 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider text-muted">{argument?.strength || "unrated"}</span>
           </div>
-          {argument?.evidence_quote && <p className="mt-2 border-l border-slate-700 pl-2 font-mono text-[9px] leading-relaxed text-slate-500">“{argument.evidence_quote}”</p>}
+          {argument?.evidence_quote && <p className="mt-2 border-l border-slate-700 pl-2 font-mono text-[9px] leading-relaxed text-muted">“{argument.evidence_quote}”</p>}
         </div>
       </div>
     </article>
@@ -34,7 +34,7 @@ export default function EvidenceChallengeMatrix({ debate }) {
     <section className="rounded-xl border border-slate-800 bg-space-950/70 p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-[10px] font-bold tracking-[0.18em] text-slate-500">ADVERSARIAL EVIDENCE ARENA</p>
+          <p className="font-mono text-[10px] font-bold tracking-[0.18em] text-muted">ADVERSARIAL EVIDENCE ARENA</p>
           <p className="mt-1 text-xs leading-relaxed text-slate-400">The agents challenge the evidence, not each other for appearance. Every position must point to recorded evidence or an explicit verification test.</p>
         </div>
         <span className={`rounded-full border px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-wider ${consensus.includes("unanimous") ? "border-neon-green/30 bg-neon-green/5 text-neon-green" : "border-gold-neon/30 bg-gold-neon/5 text-gold-neon"}`}>STATUS: {consensus}</span>
@@ -48,7 +48,7 @@ export default function EvidenceChallengeMatrix({ debate }) {
           ["JUDGE", resolution.judge_used ? "LLM" : "RULES"],
         ].map(([label, value]) => (
           <div key={label} className="rounded-lg border border-slate-800 bg-slate-900/70 p-2.5">
-            <p className="font-mono text-[8px] tracking-wider text-slate-500">{label}</p>
+            <p className="font-mono text-[8px] tracking-wider text-muted">{label}</p>
             <p className="mt-1 text-sm font-black uppercase text-slate-200">{value}</p>
           </div>
         ))}
@@ -58,12 +58,12 @@ export default function EvidenceChallengeMatrix({ debate }) {
         <div>
           <div className="mb-2 flex gap-1 rounded-lg border border-slate-800 bg-slate-900/60 p-1">
             {[['red', 'HUNTER — ATTACK CASE'], ['blue', 'SKEPTIC — BENIGN CASE']].map(([id, label]) => (
-              <button key={id} type="button" onClick={() => setSide(id)} className={`flex-1 rounded-md px-2 py-2 font-mono text-[9px] font-bold tracking-wider transition ${side === id ? (id === 'red' ? 'bg-neon-red/10 text-neon-red ring-1 ring-neon-red/30' : 'bg-neon-green/10 text-neon-green ring-1 ring-neon-green/30') : 'text-slate-500 hover:text-slate-300'}`}>{label}</button>
+              <button key={id} type="button" onClick={() => setSide(id)} className={`flex-1 rounded-md px-2 py-2 font-mono text-[9px] font-bold tracking-wider transition ${side === id ? (id === 'red' ? 'bg-neon-red/10 text-neon-red ring-1 ring-neon-red/30' : 'bg-neon-green/10 text-neon-green ring-1 ring-neon-green/30') : 'text-muted hover:text-slate-300'}`}>{label}</button>
             ))}
           </div>
           <div className="space-y-2">
             {argumentsList.slice(0, 6).map((argument, index) => <EvidenceRow key={`${side}-${index}`} side={side} argument={argument} index={index} />)}
-            {!argumentsList.length && <p className="rounded-lg border border-slate-800 p-3 text-xs text-slate-500">No arguments were recorded for this side.</p>}
+            {!argumentsList.length && <p className="rounded-lg border border-slate-800 p-3 text-xs text-muted">No arguments were recorded for this side.</p>}
           </div>
         </div>
 
@@ -80,7 +80,7 @@ export default function EvidenceChallengeMatrix({ debate }) {
           </div>
           {matrix.shared_techniques?.length > 0 && (
             <div className="rounded-lg border border-slate-800 bg-slate-900/60 p-3">
-              <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-slate-500">OVERLAPPING SIGNALS</p>
+              <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-muted">OVERLAPPING SIGNALS</p>
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {matrix.shared_techniques.map((item) => <span key={item} className="rounded-full border border-slate-700 px-2 py-1 font-mono text-[8px] uppercase text-slate-400">{item.replaceAll('_', ' ')}</span>)}
               </div>

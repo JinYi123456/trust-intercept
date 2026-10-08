@@ -12,13 +12,14 @@ Final red-team and release-hygiene audit for the Phase 16 release candidate and 
 - Human approval remains required for consequential defensive actions.
 
 ## Functional validation
-- Backend regression: 39/39 tests passed.
+- Backend regression: 47/47 tests passed, including the 8-test end-to-end demo smoke suite (scam→approval, legitimate→no-false-alarm, offline fallback).
 - Python compilation: passed.
-- Evaluation benchmark remains part of the regression suite.
+- Evaluation benchmark v2 (77 cases, provenance-tagged) remains part of the regression suite; metrics and all 16 failure cases are published in `EVALUATION_SUMMARY.md`.
+- Frontend production build: verified (`npm install && npm run build`, exit 0).
 
 ## Release limitations
-- Frontend production build must be verified on the developer machine with `npm install && npm run build` because the isolated build environment may not complete dependency installation.
-- The benchmark result is evidence for the included dataset only; it is not a claim of real-world perfect detection.
+- Benchmark figures (precision 0.818, FPR 0.214 — our benchmark, deterministic mode) are evidence for the included dataset only; they are not real-world detection claims, and the false-positive rate is the documented reason the product requires human approval instead of auto-blocking.
+- The Malay/Manglish keyword library is a known gap (2 Malay Macau-scam cases missed on our benchmark); it is the first item on the post-pitch roadmap.
 - The competition demo is intended to use a real hosted LLM provider on the backend. Offline mode remains the safety floor and recovery path.
 
 ## Public-release rule

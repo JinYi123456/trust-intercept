@@ -66,7 +66,7 @@ export default function EvidencePassport({ caseInfo = {}, verdict = null, eviden
           ["TOOLS", String(tools.length)],
         ].map(([label, value]) => (
           <div key={label} className="rounded-xl border border-slate-800 bg-space-950/70 p-3">
-            <p className="font-mono text-[9px] font-bold tracking-[0.18em] text-slate-600">{label}</p>
+            <p className="font-mono text-[9px] font-bold tracking-[0.18em] text-faint">{label}</p>
             <p className="mt-1 break-all font-mono text-xs font-bold text-slate-200">{value}</p>
           </div>
         ))}
@@ -74,17 +74,17 @@ export default function EvidencePassport({ caseInfo = {}, verdict = null, eviden
 
       <div className="mt-3 rounded-xl border border-slate-800 bg-space-950/70 p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="font-mono text-[9px] font-bold tracking-[0.18em] text-slate-600">EVIDENCE HASH · SHA-256</span>
+          <span className="font-mono text-[9px] font-bold tracking-[0.18em] text-faint">EVIDENCE HASH · SHA-256</span>
           <span className="break-all font-mono text-[10px] text-neon-cyan">{hash}</span>
         </div>
-        <p className="mt-2 text-[11px] leading-relaxed text-slate-500">
+        <p className="mt-2 text-[11px] leading-relaxed text-muted">
           The hash covers the redacted case view and captured evidence outputs so the investigation can be compared later without exposing the original message.
         </p>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         {tools.map((tool, index) => (
-          <span key={`${tool}-${index}`} className="rounded border border-slate-800 bg-space-950 px-2 py-1 font-mono text-[9px] text-slate-500">
+          <span key={`${tool}-${index}`} className="rounded border border-slate-800 bg-space-950 px-2 py-1 font-mono text-[9px] text-muted">
             {tool}
           </span>
         ))}

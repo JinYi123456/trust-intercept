@@ -12,4 +12,4 @@ Phase 16 freezes feature development and validates the release candidate.
 - Public-repository secret hygiene
 
 ## Release decision
-The candidate passes the backend regression suite (39/39) and Python compilation. The private operator manual is explicitly gitignored. Frontend production build remains a local release-gate check.
+The candidate passes the backend regression suite (47/47, including the end-to-end demo smoke suite) and Python compilation. The private operator manual is explicitly gitignored. Frontend production build verified locally (`npm install && npm run build`, exit 0).

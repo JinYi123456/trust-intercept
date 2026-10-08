@@ -171,7 +171,7 @@ function RadarPanel({ radar }) {
         <span
           className={cx(
             "ml-2 rounded border px-1.5 py-0.5 font-mono text-[9px] tracking-widest",
-            radar.coolingOff ? "border-neon-gold/50 bg-neon-gold/10 text-gold-neon" : "border-slate-700 bg-slate-800/60 text-slate-500"
+            radar.coolingOff ? "border-neon-gold/50 bg-neon-gold/10 text-gold-neon" : "border-slate-700 bg-slate-800/60 text-muted"
           )}
         >
           {radar.coolingOff ? "⏸ COOLING-OFF BARRIER REQUIRED" : "NO BARRIER REQUIRED"}
@@ -192,16 +192,16 @@ function RadarPanel({ radar }) {
                 style={{ width: `${Math.round(vector.score * 100)}%` }}
               />
             </span>
-            <span className={cx("w-10 shrink-0 text-right font-mono text-[10px] font-bold", vector.score >= 0.75 ? "text-neon-red" : vector.score >= 0.5 ? "text-gold-neon" : "text-slate-500")}>
+            <span className={cx("w-10 shrink-0 text-right font-mono text-[10px] font-bold", vector.score >= 0.75 ? "text-neon-red" : vector.score >= 0.5 ? "text-gold-neon" : "text-muted")}>
               {Math.round(vector.score * 100)}%
             </span>
-            <span className="hidden w-64 shrink-0 truncate text-[10px] text-slate-600 sm:block" title={vector.basis}>
+            <span className="hidden w-64 shrink-0 truncate text-[10px] text-faint sm:block" title={vector.basis}>
               {vector.basis}
             </span>
  </div>
         ))}
       </div>
-      <p className="mt-2 font-mono text-[9px] leading-relaxed text-slate-600">
+      <p className="mt-2 font-mono text-[9px] leading-relaxed text-faint">
         Overall manipulation pressure: {Math.round((radar.overall || 0) * 100)}% · vectors are rule-derived from the matched
         cues and disclosed with their evidence basis.
       </p>
@@ -226,7 +226,7 @@ function ReconPanel({ recon }) {
             recon.status === "completed"
               ? "border-neon-green/50 bg-neon-green/10 text-neon-green"
               : recon.status === "refused"
-                ? "border-slate-600 bg-slate-800/60 text-slate-500"
+                ? "border-slate-600 bg-slate-800/60 text-muted"
                 : "border-gold-neon/50 bg-gold-neon/10 text-gold-neon"
           )}
         >
@@ -242,18 +242,18 @@ function ReconPanel({ recon }) {
               { label: "TECH STACK FINGERPRINT", value: finding.tech_stack || "unknown", cls: "text-neon-cyan" },
             ].map((cell) => (
               <div key={cell.label} className="glass-sub p-2">
-                <p className="font-mono text-[9px] font-bold tracking-[0.18em] text-slate-500">{cell.label}</p>
+                <p className="font-mono text-[9px] font-bold tracking-[0.18em] text-muted">{cell.label}</p>
                 <p className={cx("mt-0.5 break-all font-mono text-xs font-bold", cell.cls)}>{cell.value}</p>
               </div>
             ))}
           </div>
-          <p className="mt-2 font-mono text-[9px] leading-relaxed text-slate-600">
+          <p className="mt-2 font-mono text-[9px] leading-relaxed text-faint">
             Probed {recon.target} · {recon.requests_sent} request(s) · {recon.capture_count || 0} capture command(s) detected
             {recon.ip_source ? ` · IP via ${recon.ip_source}` : ""} · For law-enforcement reporting — never open the link yourself.
           </p>
         </>
       ) : (
-        <p className="mt-1 text-xs text-slate-500">{recon.detail || "No sandbox probe was run for this case."}</p>
+        <p className="mt-1 text-xs text-muted">{recon.detail || "No sandbox probe was run for this case."}</p>
       )}
     </div>
  );
@@ -304,7 +304,7 @@ function DebatePanel({ step }) {
         <div className="mt-2">
           <p className="text-xs font-semibold leading-snug text-slate-200">{agent.top.claim}</p>
           {agent.top.evidence_quote && (
-            <p className="mt-1 break-url font-mono text-[10px] italic text-slate-500">
+            <p className="mt-1 break-url font-mono text-[10px] italic text-muted">
               “{agent.top.evidence_quote}”
             </p>
           )}
@@ -320,7 +320,7 @@ function DebatePanel({ step }) {
           )}
         </div>
       ) : (
-        <p className="mt-2 text-xs text-slate-500">No argument recorded for this side.</p>
+        <p className="mt-2 text-xs text-muted">No argument recorded for this side.</p>
       )}
     </div>
   );
@@ -338,7 +338,7 @@ function DebatePanel({ step }) {
         <AgentCard side="red" agent={step.red} />
         <AgentCard side="blue" agent={step.blue} />
       </div>
-      <p className="mt-2 font-mono text-[10px] leading-relaxed text-slate-500">
+      <p className="mt-2 font-mono text-[10px] leading-relaxed text-muted">
         CONSENSUS: <span className="text-slate-300">{String(step.consensus).replaceAll("_", " ").toUpperCase()}</span> · {step.policy}
       </p>
     </div>
@@ -359,7 +359,7 @@ export default function ReasoningTree({ view }) {
       >
         <span>
           <span className="label-cyber block text-neon-cyan">AGENT THOUGHT PROCESS — VISUAL CHAIN OF THOUGHT</span>
-          <span className="mt-0.5 block text-xs text-slate-500">
+          <span className="mt-0.5 block text-xs text-muted">
             Reconstructed from the logged evidence trail; nothing is invented.
           </span>
         </span>

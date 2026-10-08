@@ -184,7 +184,7 @@ export default function CameraScanner({ onCapture }) {
         )}
       </div>
 
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-muted">
         Frames are decoded <strong className="text-slate-400">on-device</strong> with jsQR — the
         video stream never leaves your machine. Only the captured frame you approve is sent to
         the TRUST//INTERCEPT pipeline for link forensics.

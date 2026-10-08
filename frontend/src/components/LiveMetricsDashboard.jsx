@@ -76,7 +76,7 @@ function StatCard({ label, value, unit, accent, pulse }) {
         accent === "cyan" && "border-neon-cyan/40"
       )}
     >
-      <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">
+      <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted">
         {label}
       </p>
       <p className="mt-1 font-mono text-2xl font-black leading-none">
@@ -92,7 +92,7 @@ function StatCard({ label, value, unit, accent, pulse }) {
         >
           {formatNumber(value)}
         </span>
-        {unit && <span className="ml-1 font-mono text-[10px] font-bold text-slate-500">{unit}</span>}
+        {unit && <span className="ml-1 font-mono text-[10px] font-bold text-muted">{unit}</span>}
       </p>
       {pulse && (
         <span
@@ -107,7 +107,7 @@ function StatCard({ label, value, unit, accent, pulse }) {
 function DistributionBars({ items, emptyLabel }) {
   const max = Math.max(1, ...items.map((item) => item.count));
   if (!items.length) {
-    return <p className="py-2 font-mono text-[11px] text-slate-500">{emptyLabel}</p>;
+    return <p className="py-2 font-mono text-[11px] text-muted">{emptyLabel}</p>;
   }
   return (
     <ul className="space-y-1.5">
@@ -245,28 +245,28 @@ export default function LiveMetricsDashboard({ defaultOpen = true }) {
                 <span className="font-mono text-[10px] text-slate-400">
                   report events: <span className="font-bold text-neon-cyan">{formatNumber(network?.report_events ?? 0)}</span>
                 </span>
-                <span className="font-mono text-[9px] text-slate-600">{network?.privacy_note || "SHA-256 hashes only — no message content."}</span>
+                <span className="font-mono text-[9px] text-faint">{network?.privacy_note || "SHA-256 hashes only — no message content."}</span>
               </div>
 
               {/* Trend + distributions */}
               <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3">
                 <div className="glass-sub p-3">
                   <div className="flex items-baseline justify-between">
-                    <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">
+                    <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted">
                       Cases — last 7 days
                     </p>
-                    <p className="font-mono text-[10px] text-slate-500">
+                    <p className="font-mono text-[10px] text-muted">
                       total <span className="font-bold text-neon-cyan">{trendTotal}</span>
                     </p>
                   </div>
                   <Sparkline series={trend} />
-                  <p className="font-mono text-[9px] text-slate-600">
+                  <p className="font-mono text-[9px] text-faint">
                     red nodes = high-risk intercepts · zero-filled for stable scaling
                   </p>
                 </div>
 
                 <div className="glass-sub p-3">
-                  <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">
+                  <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted">
                     Active threat categories (cues)
                   </p>
                   <div className="mt-2">
@@ -278,7 +278,7 @@ export default function LiveMetricsDashboard({ defaultOpen = true }) {
                 </div>
 
                 <div className="glass-sub p-3">
-                  <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-slate-500">
+                  <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-muted">
                     Verdict mix &amp; outcomes
                   </p>
                   <div className="mt-2 space-y-1.5">
@@ -296,7 +296,7 @@ export default function LiveMetricsDashboard({ defaultOpen = true }) {
                         </span>
                       </div>
                     ))}
-                    <p className="pt-1 font-mono text-[9px] leading-relaxed text-slate-600">
+                    <p className="pt-1 font-mono text-[9px] leading-relaxed text-faint">
                       Agreement = approvals (Looks Safe / Report / Block-Warn) vs. disagreements across{" "}
                       {formatNumber(agreement?.total ?? 0)} decisions.
                     </p>
@@ -305,7 +305,7 @@ export default function LiveMetricsDashboard({ defaultOpen = true }) {
               </div>
 
               {/* Footer line */}
-              <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[9px] tracking-wider text-slate-600">
+              <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[9px] tracking-wider text-faint">
                 <span>
                   SOURCE: <span className="text-slate-400">GET /metrics — REAL LOCAL DATA, NOTHING SIMULATED</span>
                 </span>

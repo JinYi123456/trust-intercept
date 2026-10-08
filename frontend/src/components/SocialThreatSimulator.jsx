@@ -310,7 +310,7 @@ export default function SocialThreatSimulator() {
                 <span className="block text-xs font-bold text-slate-200">
                   {threat.app} — {threat.id.split("_")[1]}
                 </span>
-                <span className="block truncate text-[11px] text-slate-500">{threat.preview}</span>
+                <span className="block truncate text-[11px] text-muted">{threat.preview}</span>
               </span>
             </button>
           ))}
@@ -327,7 +327,7 @@ export default function SocialThreatSimulator() {
             </div>
           )}
           <div className="mx-2 mb-2 mt-2 rounded-lg border border-slate-800 bg-slate-900/80 p-2.5">
-            <p className="text-[10px] leading-relaxed text-slate-500">
+            <p className="text-[10px] leading-relaxed text-muted">
               {nativeStatus ||
                 (supported && permission === "granted"
                   ? "Native OS banners active — the system notification loads the threat on click, even when the window is minimized."

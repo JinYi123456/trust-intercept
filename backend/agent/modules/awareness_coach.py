@@ -16,12 +16,14 @@ from backend.models.case import Case, Quiz, QuizQuestion, Verdict
 # ---------------------------------------------------------------------------
 
 PATTERN_RULES: list[tuple[str, tuple[str, ...]]] = [
-    ("Fake courier / parcel-fee scam", ("parcel", "delivery", "courier", "customs", "depot", "shipment")),
+    ("Fake courier / parcel-fee scam", ("parcel", "delivery", "courier", "customs", "depot", "shipment", "pos laju", "poslaju", "j&t", "jt express", "ninja van")),
     ("Fake bank security alert", ("bank", "account suspended", "unusual activity", "compromised", "internet banking")),
     ("Fake OTP / verification-code request", ("otp", "one-time password", "verification code", "passcode")),
     ("Phishing 'verify your account' lure", ("verify your account", "confirm your identity", "update your details", "reactivate")),
     ("Prize / lottery / refund scam", ("congratulations", "you have won", "lottery", "prize", "refund", "cashback")),
     ("Government / tax authority impersonation", ("iras", "lhdn", "inland revenue", "tax authority", "police")),
+    ("Macau scam — fake police/court call", ("macau", "criminal case", "money laundering", "arrest warrant", "interpol", "pdrm", "mahkamah", "court case", "embassy")),
+    ("E-wallet freeze / KYC scam (TNG/Boost/ShopeePay)", ("touch 'n go", "touch n go", "tng", "boost", "grabpay", "shopeepay", "e-wallet", "ewallet")),
 ]
 
 

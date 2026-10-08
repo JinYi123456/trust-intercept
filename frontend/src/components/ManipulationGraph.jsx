@@ -74,7 +74,7 @@ export default function ManipulationGraph({ attackChain, cues = [], intendedActi
 
   if (!nodes.length) {
     return (
-      <div className="rounded-xl border border-slate-800 bg-space-950/70 p-4 text-sm text-slate-500">
+      <div className="rounded-xl border border-slate-800 bg-space-950/70 p-4 text-sm text-muted">
         No manipulation-chain nodes were recorded for this case. Use the message cues and uncertainty notes below; an empty graph is not proof that a message is safe.
       </div>
     );
@@ -84,7 +84,7 @@ export default function ManipulationGraph({ attackChain, cues = [], intendedActi
     <div className="rounded-xl border border-slate-800 bg-space-950/70 p-4">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-[10px] font-bold tracking-[0.18em] text-slate-500">MANIPULATION GRAPH™</p>
+          <p className="font-mono text-[10px] font-bold tracking-[0.18em] text-muted">MANIPULATION GRAPH™</p>
           <p className="mt-1 text-xs text-slate-400">Select any stage to inspect its role and the evidence linked to it.</p>
         </div>
         <span className="rounded-full border border-gold-neon/30 bg-gold-neon/5 px-2.5 py-1 font-mono text-[9px] font-bold tracking-wider text-gold-neon">
@@ -104,12 +104,12 @@ export default function ManipulationGraph({ attackChain, cues = [], intendedActi
                 aria-pressed={active}
                 className={`min-w-[130px] rounded-lg border px-3 py-3 text-left transition focus:outline-none focus:ring-2 focus:ring-neon-cyan/70 ${active ? "border-neon-cyan/70 bg-neon-cyan/10 shadow-glow-cyan-soft" : "border-slate-700 bg-slate-900/70 hover:border-slate-500"}`}
               >
-                <span className="block font-mono text-[9px] text-slate-500">STAGE {String(index + 1).padStart(2, "0")}</span>
+                <span className="block font-mono text-[9px] text-muted">STAGE {String(index + 1).padStart(2, "0")}</span>
                 <span className={`mt-1 block text-[11px] font-bold leading-snug ${active ? "text-neon-cyan" : "text-slate-200"}`}>{node.label}</span>
-                <span className="mt-2 block text-[8px] tracking-wider text-slate-500">{KIND_LABELS[node.kind] || String(node.kind || "EVIDENCE").toUpperCase()}</span>
+                <span className="mt-2 block text-[8px] tracking-wider text-muted">{KIND_LABELS[node.kind] || String(node.kind || "EVIDENCE").toUpperCase()}</span>
                 {nodeCues.length > 0 && <span className="mt-2 inline-flex rounded-full border border-neon-red/40 bg-neon-red/10 px-1.5 py-0.5 font-mono text-[9px] text-red-200">{nodeCues.length} linked cue{nodeCues.length === 1 ? "" : "s"}</span>}
               </button>
-              {index < nodes.length - 1 && <span aria-hidden="true" className="font-mono text-lg text-slate-600">→</span>}
+              {index < nodes.length - 1 && <span aria-hidden="true" className="font-mono text-lg text-faint">→</span>}
             </div>
           );
         })}
@@ -120,7 +120,7 @@ export default function ManipulationGraph({ attackChain, cues = [], intendedActi
           <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-neon-cyan">SELECTED STAGE</p>
           <h3 className="mt-1 text-base font-black text-slate-100">{selected?.label}</h3>
           <p className="mt-2 text-sm leading-relaxed text-slate-300">{guidance.title}</p>
-          <div className="mt-3 space-y-1 text-[11px] text-slate-500">
+          <div className="mt-3 space-y-1 text-[11px] text-muted">
             {incoming.map((edge, index) => <p key={`in-${index}`}>← From previous stage: {edge.reason || "recorded sequence"}</p>)}
             {outgoing.map((edge, index) => <p key={`out-${index}`}>→ Leads to next stage: {edge.reason || "recorded sequence"}</p>)}
             {!incoming.length && !outgoing.length && <p>This is the only recorded stage in the current chain.</p>}
@@ -128,7 +128,7 @@ export default function ManipulationGraph({ attackChain, cues = [], intendedActi
         </section>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
-          <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-slate-500">EVIDENCE & SAFE BREAKPOINT</p>
+          <p className="font-mono text-[9px] font-bold tracking-[0.16em] text-muted">EVIDENCE & SAFE BREAKPOINT</p>
           {linkedCues.length ? (
             <div className="mt-2 space-y-2">
               {linkedCues.map((cue, index) => (
@@ -140,7 +140,7 @@ export default function ManipulationGraph({ attackChain, cues = [], intendedActi
               ))}
             </div>
           ) : (
-            <p className="mt-2 text-xs leading-relaxed text-slate-500">No direct cue-to-stage match was recorded. This stage is shown as part of the rule-based chain, not as independently confirmed intent.</p>
+            <p className="mt-2 text-xs leading-relaxed text-muted">No direct cue-to-stage match was recorded. This stage is shown as part of the rule-based chain, not as independently confirmed intent.</p>
           )}
           <div className="mt-3 rounded-md border border-neon-green/25 bg-neon-green/5 p-3">
             <p className="font-mono text-[9px] font-bold tracking-wider text-neon-green">BREAK THE CHAIN HERE</p>
@@ -150,7 +150,7 @@ export default function ManipulationGraph({ attackChain, cues = [], intendedActi
       </div>
 
       {intendedActions.length > 0 && (
-        <p className="mt-3 border-t border-slate-800 pt-3 text-[10px] leading-relaxed text-slate-500">
+        <p className="mt-3 border-t border-slate-800 pt-3 text-[10px] leading-relaxed text-muted">
           Inferred target action(s): {intendedActions.map((action) => String(action).replaceAll("_", " ")).join(" · ")}. These are rule-based hypotheses from observed cues, not proof of the sender's identity or intent.
         </p>
       )}

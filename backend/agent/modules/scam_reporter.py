@@ -136,7 +136,16 @@ def _render_markdown(
 
     lines += [
         "",
-        "## 7. Privacy notice",
+        "## 7. Where to report (Malaysia)",
+        "The reporter chooses where to send this bundle. Nothing is transmitted automatically.",
+        "Always navigate to these portals yourself — never through a link from the suspicious message:",
+        "",
+        "- **NSRC — National Scam Response Centre: call 997** (24/7 hotline for scam reports and fund-freeze requests; call immediately after any transfer).",
+        "- **Semak Mule (PDRM): https://semakmule.rmp.gov.my** — check whether the account/phone number in the message is a known mule account.",
+        "- **Bank Negara Malaysia (BNM): https://www.bnm.gov.my** — BNMTELELINK 1-300-88-5465 for banking/insurance-related complaints.",
+        "- **CCID Online Reporting (PDRM): https://report.iccid.rmp.gov.my** — commercial crime investigation online report.",
+        "",
+        "## 8. Privacy notice",
         "Personal identifiers in the original message were replaced with placeholders",
         "(e.g. [REDACTED_IC_NRIC_1]) before this report was assembled. TRUST//INTERCEPT never",
         "uploads the unredacted original; the reporter chooses whether to attach it.",

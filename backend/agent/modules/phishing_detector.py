@@ -125,6 +125,64 @@ SPOOF_PATTERNS: list[tuple[str, Severity, str]] = [
     ),
 ]
 
+# ---------------------------------------------------------------------------
+# Malaysia-specific patterns (Macau scam, parcel/PosLaju/J&T, e-wallet,
+# LHDN/PDRM impersonation). Mapped to the SAME cue types as the generic
+# engine so decision_defence / counterfactual / debate pick them up offline.
+# Brand names alone are never flagged — each pattern requires the brand to
+# co-occur with a scam action (fee, hold, verify, block) within a short
+# window, to protect legitimate courier/bank messages.
+# ---------------------------------------------------------------------------
+
+MY_AUTHORITY_PATTERNS: list[tuple[str, Severity, str]] = [
+    (
+        r"\b(pdrm|police|polis diraja|interpol|embassy|high ?commission|court|mahkamah)\b[^.?!]{0,80}\b(case|warrant|arrest|money laundering|investigation|summons|blacklisted)\b",
+        Severity.HIGH,
+        "Macau scam marker: an 'authority' claims a criminal case against you and pressures you to pay or transfer — real police never collect money by phone or message.",
+    ),
+    (
+        r"\b(criminal case|money laundering|arrest warrant|arrest you|police report against you|frozen (bank )?account.{0,30}(central bank|negara))\b",
+        Severity.HIGH,
+        "Classic Macau-scam script: fabricated criminal proceedings used to scare you into moving money to 'clear your name'.",
+    ),
+    (
+        r"\b(lhdn|hasil|inland revenue|irb|lembaga hasil)\b[^.?!]{0,60}\b(refund|tax (owing|due|arrears)|audit|case|summons|payment)\b",
+        Severity.HIGH,
+        "LHDN/tax impersonation: the real LHDN issues refunds to your registered bank account, never via links or small 'processing fees' in messages.",
+    ),
+    (
+        r"\b(bank negara|skmm|mcmc|jabatan imigresen|immigration|jabatan kastam)\b[^.?!]{0,80}\b(verify|frozen|blocked|blacklisted|fine|penalty|account)\b",
+        Severity.HIGH,
+        "Government-agency impersonation: Bank Negara, SKMM, Immigration or Customs never handle fines or account checks through message links.",
+    ),
+]
+
+MY_PARCEL_PATTERNS: list[tuple[str, Severity, str]] = [
+    (
+        r"\b(pos ?laju|j& ?t|jt express|ninja van|city-?link|gdex|abx express|shopee express|xpress)\b[^.?!]{0,60}\b(fee|charge|customs|held|held up|release|claim|redeliver|unpaid)\b",
+        Severity.HIGH,
+        "Parcel-fee scam (PosLaju/J&T pattern): a small 'release fee' on a parcel you're expecting — real couriers collect payment in the app you ordered from, not via message links.",
+    ),
+    (
+        r"\b(parcel|package|delivery|kurier)\b[^.?!]{0,60}\b(held|customs|fees? (unpaid|due)|release)\b",
+        Severity.MEDIUM,
+        "Parcel-hold pressure: verify the delivery status in the courier's official app or on the order page you actually used.",
+    ),
+]
+
+MY_EWALLET_PATTERNS: list[tuple[str, Severity, str]] = [
+    (
+        r"\b(touch .?n.?go|tng (e-?wallet|ewallet|app)|boost (wallet|app|pay)|grabpay|shopeepay|e-?wallet)\b[^.?!]{0,60}\b(verify|blocked|frozen|suspend|expire|upgrade|kyc|re-?activate|confirm)\b",
+        Severity.HIGH,
+        "E-wallet account scam (TNG/Boost/ShopeePay pattern): 'your wallet will be frozen' pressure to harvest your PIN/OTP — check inside the official app's own inbox instead.",
+    ),
+    (
+        r"\b(e-?wallet|tng|touch .?n.?go|grabpay|shopeepay)\b[^.?!]{0,40}\b(otp|pin|password|credential)\b",
+        Severity.HIGH,
+        "E-wallet credential request: no legitimate wallet service asks for your PIN or OTP by message or call.",
+    ),
+]
+
 # Disguised links: IP hosts, punycode, URL shorteners, non-https.
 SUSPICIOUS_URL_RE = re.compile(
     r"https?://(\d{1,3}(?:\.\d{1,3}){3}"
@@ -154,6 +212,9 @@ ALL_PATTERNS: list[tuple[str, Severity, str, re.Pattern[str]]] = (
     + _compile(PAYMENT_PATTERNS, "payment_request")
     + _compile(PRIZE_PATTERNS, "too_good_to_be_true")
     + _compile(SPOOF_PATTERNS, "spoofed_sender")
+    + _compile(MY_AUTHORITY_PATTERNS, "spoofed_sender")
+    + _compile(MY_PARCEL_PATTERNS, "payment_request")
+    + _compile(MY_EWALLET_PATTERNS, "credential_request")
 )
 
 SEVERITY_ORDER = {Severity.LOW: 0, Severity.MEDIUM: 1, Severity.HIGH: 2}

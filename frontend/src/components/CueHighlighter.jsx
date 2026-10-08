@@ -61,18 +61,25 @@ function CuePopover({ cue, index }) {
     <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 hidden w-64 -translate-x-1/2 group-hover:block group-focus-within:block">
       <span className="glass-panel block border-neon-red/40 p-3 text-left shadow-glow-red">
         <span className="flex items-center gap-2">
-          <span className={cx("h-2 w-2 rounded-full", severityDotClass(cue.severity))} />
+          <span
+            className={cx("h-2 w-2 rounded-full", severityDotClass(cue.severity))}
+            aria-hidden="true"
+          />
+          <span className="sr-only">{String(cue.severity || "low").toUpperCase()} severity</span>
+          <span aria-hidden="true" className="text-xs">
+            {String(cue.severity).toLowerCase() === "high" ? "⛔" : String(cue.severity).toLowerCase() === "medium" ? "⚠️" : "•"}
+          </span>
           <span className="rounded bg-slate-800 px-1.5 py-0.5 font-mono text-[10px] font-bold tracking-widest text-slate-300">
             {String(cue.cue_type || "cue").toUpperCase()}
           </span>
-          <span className="font-mono text-[10px] text-slate-500">
+          <span className="font-mono text-[10px] text-muted">
             {cue.source === "llm" ? "LLM-EXPLAINED" : "RULE MATCH"}
           </span>
         </span>
         <span className="mt-1.5 block text-xs leading-relaxed text-slate-200">
           {cue.explanation}
         </span>
-        <span className="mt-1.5 block font-mono text-[10px] tracking-widest text-slate-500">
+        <span className="mt-1.5 block font-mono text-[10px] tracking-widest text-muted">
           SEVERITY: {String(cue.severity || "—").toUpperCase()}
         </span>
       </span>
@@ -83,7 +90,7 @@ function CuePopover({ cue, index }) {
 export default function CueHighlighter({ text = "", cues = [] }) {
   if (!text || !text.trim()) {
     return (
-      <p className="glass-sub p-4 text-sm text-slate-500">
+      <p className="glass-sub p-4 text-sm text-muted">
         No message text is available for this case.
       </p>
     );
@@ -126,15 +133,22 @@ export default function CueHighlighter({ text = "", cues = [] }) {
             </span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <span className={cx("h-2.5 w-2.5 shrink-0 rounded-full", severityDotClass(cue.severity))} />
+                <span
+                  className={cx("h-2.5 w-2.5 shrink-0 rounded-full", severityDotClass(cue.severity))}
+                  aria-hidden="true"
+                />
+                <span className="sr-only">{String(cue.severity || "low").toUpperCase()} severity</span>
+                <span aria-hidden="true" className="text-xs">
+                  {String(cue.severity).toLowerCase() === "high" ? "⛔" : String(cue.severity).toLowerCase() === "medium" ? "⚠️" : "•"}
+                </span>
                 <span className="rounded bg-slate-800/80 px-2 py-0.5 font-mono text-[11px] font-semibold tracking-wider text-slate-300">
                   {cue.cue_type || "cue"}
                 </span>
-                <span className="font-mono text-[10px] tracking-widest text-slate-500">
+                <span className="font-mono text-[10px] tracking-widest text-muted">
                   {cue.source === "llm" ? "LLM-EXPLAINED" : "RULE MATCH"}
                 </span>
               </div>
-              <p className="mt-1 break-url text-xs text-slate-500">“{cue.text}”</p>
+              <p className="mt-1 break-url text-xs text-muted">“{cue.text}”</p>
               <p className="mt-1 text-sm text-slate-300">{cue.explanation}</p>
             </div>
           </li>

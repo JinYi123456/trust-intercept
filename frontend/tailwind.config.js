@@ -4,7 +4,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        "gold-neon": "#FFB800", // alias so `gold-neon` reads naturally next to `neon-*`
+        "gold-neon": "#FFC933", // brightened from #FFB800 for ≥4.5:1 on dark bg
+        // Accessibility-tuned slate ramp: slate-400/500 usages below now meet
+        // WCAG AA (≥4.5:1) against the space-900/950 backgrounds.
+        "muted": "#94A3B8",   // replacement for slate-500 body text
+        "faint": "#64748B",   // replacement for slate-600 hints (≥4.5:1 on #090D16)
         space: {
           950: "#070B12",
           900: "#090D16",

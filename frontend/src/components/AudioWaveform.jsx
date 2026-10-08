@@ -166,7 +166,7 @@ export default function AudioWaveform({ file, scanning = false }) {
             "grid h-10 w-10 shrink-0 place-items-center rounded-full border text-sm transition",
             peaks
               ? "border-neon-cyan/60 bg-neon-cyan/15 text-neon-cyan hover:bg-neon-cyan/25"
-              : "cursor-not-allowed border-slate-700 text-slate-600"
+              : "cursor-not-allowed border-slate-700 text-faint"
           )}
         >
           {playing ? "⏸" : "▶"}
@@ -175,7 +175,7 @@ export default function AudioWaveform({ file, scanning = false }) {
           <p className="truncate font-mono text-[11px] font-bold tracking-wider text-slate-300">
             {file ? file.name : "No audio selected"}
           </p>
-          <p className="font-mono text-[10px] text-slate-500">
+          <p className="font-mono text-[10px] text-muted">
             {duration ? fmt(duration) : "--:--"}
             {scanning && <span className="ml-2 animate-pulse-glow text-neon-red">◉ ANALYSING SPECTRUM…</span>}
           </p>

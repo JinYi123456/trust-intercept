@@ -22,6 +22,14 @@
     @apply bg-neon-cyan/30 text-white;
   }
 
+  /* Global keyboard-focus visibility (audit: keyboard navigation). */
+  :focus-visible {
+    outline: 2px solid #00E5FF;
+    outline-offset: 2px;
+  }
+  /* Native <details> summary needs the marker removed but must keep focus ring. */
+  summary::-webkit-details-marker { display: none; }
+
   * {
     scrollbar-width: thin;
     scrollbar-color: #1e293b transparent;
@@ -136,7 +144,7 @@
     @apply font-mono text-xs font-bold uppercase tracking-[0.18em] text-slate-300;
   }
   .state-copy {
-    @apply mt-2 text-sm leading-6 text-slate-500;
+    @apply mt-2 text-sm leading-6 text-muted;
   }
 }
 

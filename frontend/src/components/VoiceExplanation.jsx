@@ -61,7 +61,7 @@ export default function VoiceExplanation({ script, className }) {
         speaking
           ? "border-neon-red/60 bg-neon-red/10 text-neon-red shadow-glow-red-soft"
           : "border-neon-cyan/50 bg-neon-cyan/10 text-neon-cyan hover:bg-neon-cyan/20 shadow-glow-cyan-soft",
-        (!supported || !script) && "cursor-not-allowed border-slate-800 bg-space-950 text-slate-600 opacity-60 shadow-none"
+        (!supported || !script) && "cursor-not-allowed border-slate-800 bg-space-950 text-faint opacity-60 shadow-none"
       )}
     >
       <span aria-hidden="true">{speaking ? "⏹" : "🔊"}</span>

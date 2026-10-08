@@ -85,22 +85,22 @@ function DecisionRow({ decision, currentScore }) {
         <span className={cx("rounded-full border px-2 py-0.5 font-mono text-[11px]", riskDeltaClass(delta))}>
           {deltaText}
         </span>
-        <span className="ml-auto font-mono text-[11px] text-slate-500">{formatDateTime(decision.decided_at)}</span>
+        <span className="ml-auto font-mono text-[11px] text-muted">{formatDateTime(decision.decided_at)}</span>
       </div>
 
       <p className="mt-2 text-sm text-slate-300">{decision.action_taken}</p>
 
       <div className="mt-3 grid grid-cols-1 gap-2 rounded-lg bg-space-950/70 p-3 font-mono text-[11px] text-slate-400 sm:grid-cols-3">
         <div>
-          <span className="block font-bold uppercase tracking-wider text-slate-500">Approved by</span>
+          <span className="block font-bold uppercase tracking-wider text-muted">Approved by</span>
           {decision.decided_by}
         </div>
         <div>
-          <span className="block font-bold uppercase tracking-wider text-slate-500">Evidence snapshot</span>
+          <span className="block font-bold uppercase tracking-wider text-muted">Evidence snapshot</span>
           {cueCount} cue{cueCount === 1 ? "" : "s"} in frozen verdict
         </div>
         <div>
-          <span className="block font-bold uppercase tracking-wider text-slate-500">Snapshot confidence</span>
+          <span className="block font-bold uppercase tracking-wider text-muted">Snapshot confidence</span>
           {decision.verdict_snapshot?.confidence || "—"}
         </div>
       </div>
@@ -112,7 +112,7 @@ function DecisionRow({ decision, currentScore }) {
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <span className="font-mono text-[11px] font-bold tracking-wider text-slate-500">
+        <span className="font-mono text-[11px] font-bold tracking-wider text-muted">
           VERIFICATION HASH (SHA-256, CLIENT-SIDE):
         </span>
         <code className="break-all rounded bg-space-950 px-2 py-1 font-mono text-[11px] text-neon-green">
@@ -146,7 +146,7 @@ export default function AuditLog({ view }) {
         ].map((stat) => (
           <div key={stat.label} className="glass-panel p-3 text-center">
             <p className="text-lg font-black text-neon-cyan">{stat.value}</p>
-            <p className="font-mono text-[10px] uppercase tracking-wider text-slate-500">{stat.label}</p>
+            <p className="font-mono text-[10px] uppercase tracking-wider text-muted">{stat.label}</p>
           </div>
         ))}
       </div>

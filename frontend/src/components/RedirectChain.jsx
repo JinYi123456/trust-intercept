@@ -14,7 +14,7 @@ function truncateUrl(url, max = 72) {
 
 function domainAgeBadge(ageDays) {
   if (ageDays === null || ageDays === undefined) {
-    return { label: "DOMAIN AGE UNKNOWN", className: "border-slate-700 bg-space-950 text-slate-500" };
+    return { label: "DOMAIN AGE UNKNOWN", className: "border-slate-700 bg-space-950 text-muted" };
   }
   if (ageDays < 30) {
     return {
@@ -37,7 +37,7 @@ function domainAgeBadge(ageDays) {
 function ReputationRow({ engine }) {
   if (!engine) return null;
   const state = !engine.checked
-    ? { text: "NOT CHECKED", className: "border-slate-700 bg-space-950 text-slate-500" }
+    ? { text: "NOT CHECKED", className: "border-slate-700 bg-space-950 text-muted" }
     : engine.malicious
     ? { text: "FLAGGED AS MALICIOUS", className: "border-neon-red/70 bg-neon-red/15 text-neon-red shadow-glow-red-soft" }
     : { text: "NO THREATS FOUND", className: "border-neon-green/60 bg-neon-green/10 text-neon-green" };
@@ -50,9 +50,9 @@ function ReputationRow({ engine }) {
       <span className={cx("rounded-full border px-2 py-0.5 font-bold", state.className)}>
         {state.text}
       </span>
-      {engine.detail && <span className="text-slate-500">{engine.detail}</span>}
+      {engine.detail && <span className="text-muted">{engine.detail}</span>}
       {engine.unavailable_reason && (
-        <span className="italic text-slate-500">{engine.unavailable_reason}</span>
+        <span className="italic text-muted">{engine.unavailable_reason}</span>
       )}
     </div>
   );
@@ -106,7 +106,7 @@ export default function RedirectChain({ chains = [], domains = [] }) {
                     >
                       {truncateUrl(hop.url)}
                     </div>
-                    <div className="mt-0.5 flex flex-wrap items-center gap-2 font-mono text-[11px] text-slate-500">
+                    <div className="mt-0.5 flex flex-wrap items-center gap-2 font-mono text-[11px] text-muted">
                       {hop.status_code && (
                         <span
                           className={cx(
@@ -152,7 +152,7 @@ export default function RedirectChain({ chains = [], domains = [] }) {
                   <span className="font-bold text-slate-400">DOMAIN:</span>
                   <span className="break-url text-neon-cyan">{intel.domain}</span>
                   {intel.created_at && (
-                    <span className="text-slate-500">(registered {intel.created_at})</span>
+                    <span className="text-muted">(registered {intel.created_at})</span>
                   )}
                   {intel.lookup_source && (
                     <span className="rounded border border-slate-700 bg-space-950 px-1.5 py-0.5 text-slate-400">
@@ -164,7 +164,7 @@ export default function RedirectChain({ chains = [], domains = [] }) {
                   <ReputationRow key={engineIndex} engine={engine} />
                 ))}
                 {(intel.notes || []).map((note, noteIndex) => (
-                  <p key={noteIndex} className="text-xs italic text-slate-500">
+                  <p key={noteIndex} className="text-xs italic text-muted">
                     {note}
                   </p>
                 ))}

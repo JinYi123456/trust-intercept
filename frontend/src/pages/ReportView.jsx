@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/client.js";
+import { InlineError, Loading, ErrorState } from "../components/AsyncStates.jsx";
+import { useLang } from "../lib/i18n.jsx";
 import { cx, formatDateTime } from "../lib/ui";
 
 /**
@@ -44,26 +46,19 @@ export default function ReportView() {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="py-16 text-center">
-        <span className="animate-pulse-glow font-mono text-xs tracking-[0.3em] text-neon-cyan">
-          LOADING REPORT BUNDLE…
-        </span>
-      </div>
-    );
-  }
+  if (loading) return <Loading label="LOADING REPORT BUNDLE…" />;
 
   if (error && !view) {
     return (
-      <div className="mx-auto max-w-3xl">
-        <div role="alert" className="glass-panel border-neon-red/40 p-4 text-sm text-red-200">
-          {error}
-        </div>
-        <Link to="/" className="mt-4 inline-block font-mono text-xs tracking-wider text-neon-cyan hover:underline">
-          ← BACK TO SUBMISSION
-        </Link>
-      </div>
+      <ErrorState
+        message={error}
+        onRetry={() => window.location.reload()}
+        backLink={
+          <Link to="/" className="rounded-lg border border-slate-700 bg-space-900 px-4 py-2 text-sm font-bold text-slate-300 transition hover:text-neon-cyan">
+            ← BACK TO SUBMISSION
+          </Link>
+        }
+      />
     );
   }
 
@@ -115,23 +110,23 @@ export default function ReportView() {
         {/* Metadata */}
         <div className="grid grid-cols-1 gap-3 glass-panel p-4 sm:grid-cols-2">
           <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">CHANNEL</p>
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">CHANNEL</p>
             <p className="mt-1 text-sm text-slate-200">{report.channel}</p>
           </div>
           <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
               INCIDENT TIMESTAMP
             </p>
             <p className="mt-1 text-sm text-slate-200">{formatDateTime(report.incident_timestamp)}</p>
           </div>
           <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
               EVIDENCE HASH
             </p>
             <p className="mt-1 break-url font-mono text-sm text-neon-green">{report.evidence_hash}</p>
           </div>
           <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
               CUES DETECTED
             </p>
             <p className="mt-1 text-sm text-slate-200">
@@ -143,7 +138,7 @@ export default function ReportView() {
 
         {/* Summary */}
         <div className="glass-panel p-4">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
             INCIDENT SUMMARY
           </p>
           <p className="mt-2 text-sm leading-relaxed text-slate-200">{report.summary}</p>
@@ -152,7 +147,7 @@ export default function ReportView() {
         {/* Cues */}
         {report.cues_detected?.length > 0 && (
           <div className="glass-panel p-4">
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
               CUES DETECTED (QUOTED FROM THE REDACTED MESSAGE)
             </p>
             <ul className="mt-3 space-y-2">
@@ -170,7 +165,7 @@ export default function ReportView() {
 
         {/* Redacted message */}
         <div className="glass-panel p-4">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
             REDACTED MESSAGE
           </p>
           <pre className="mt-2 whitespace-pre-wrap break-url rounded-lg bg-space-950 p-3 font-mono text-xs leading-relaxed text-slate-300">
@@ -180,7 +175,7 @@ export default function ReportView() {
 
         {/* Full markdown preview */}
         <div className="glass-panel p-4">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted">
             FULL REPORT (MARKDOWN)
           </p>
           <pre className="mt-2 max-h-96 overflow-y-auto whitespace-pre-wrap rounded-lg bg-space-950 p-4 font-mono text-xs leading-relaxed text-neon-cyan/90">
@@ -221,11 +216,7 @@ export default function ReportView() {
         </Link>
       </div>
 
-      {error && (
-        <div role="alert" className="mt-4 rounded-lg border border-neon-red/40 bg-neon-red/10 p-3 text-sm text-red-200">
-          {error}
-        </div>
-      )}
+      {error && <InlineError message={error} />}
     </div>
   );
 }
