@@ -82,3 +82,22 @@ def health() -> dict:
         "redirect_max_hops": settings.redirect_max_hops,
         "ocr_cloud_fallback": settings.ocr_cloud_fallback,
     }
+
+
+@app.get("/ready", tags=["system"], summary="Readiness check for deployment and demo startup")
+def ready() -> dict:
+    """Return a deployment-safe readiness signal without exposing secrets."""
+    try:
+        db.init_db()
+        database = "ready"
+    except Exception as exc:  # pragma: no cover - deployment failure path
+        database = f"error: {type(exc).__name__}"
+    llm = llm_status()
+    return {
+        "status": "ready" if database == "ready" else "degraded",
+        "database": database,
+        "llm": llm,
+        "offline_fallback": True,
+        "outbound_lookups_enabled": settings.allow_outbound_lookups,
+        "version": "1.0.0",
+    }

@@ -1,0 +1,22 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: deployment/backend.Dockerfile
+    environment:
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      LLM_PROVIDER: ${LLM_PROVIDER:-none}
+      ALLOW_OUTBOUND_LOOKUPS: ${ALLOW_OUTBOUND_LOOKUPS:-false}
+      DB_PATH: /data/trust-intercept.db
+    volumes:
+      - trust-intercept-data:/data
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/ready')"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  trust-intercept-data:
