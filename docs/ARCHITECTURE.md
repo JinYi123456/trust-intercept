@@ -7,11 +7,30 @@
 **Repository:** `trust-intercept`  
 **Tagline:** INTERCEPT THE DECISION.
 
-## 2. Agentic pipeline
+## 2. Deployment architecture
+
+For the competition demo, the intended deployment is:
+
+```text
+Vercel
+  React/Vite frontend
+        │ HTTPS
+        ▼
+FastAPI backend
+        │
+        ├── deterministic evidence/tool layer
+        ├── optional hosted LLM provider
+        ├── optional reputation services
+        └── persistent case/audit storage
+```
+
+The frontend receives only `VITE_API_BASE_URL`. Provider API keys stay on the backend host and are never bundled into the browser build.
+
+## 3. Agentic pipeline
 
 1. Trust Gateway — accepts text, image, QR, URL, document or audio.
 2. Local Normaliser — OCR/QR extraction and PII redaction before model access.
-3. Evidence Graph — converts all observations into a common evidence object.
+3. Evidence Graph — converts observations into a common evidence object.
 4. Agent Router — selects only the tools required for the case.
 5. Hunter Agent — searches for attack indicators and infrastructure evidence.
 6. Skeptic Agent — actively searches for benign explanations and false positives.
@@ -22,24 +41,24 @@
 11. Human Approval Gate — the person authorises the next action.
 12. Immunity Coach — turns the incident into an adaptive training scenario.
 
-## 3. Design principle
+## 4. Design principle
 
 The system is not a binary scam classifier. It is a **decision-defence system**.
 
-## 4. Model policy
+## 5. Model policy
 
-Default: deterministic local engine.  
-Optional: Gemini free-tier API.  
-No paid model is required for the baseline demo.
+**Competition demo:** recommended hosted provider is Gonka via `LLM_PROVIDER=gonka` and a backend-only `GONKA_API_KEY`. Featherless and Gemini remain supported alternatives/fallbacks.  
+**Recovery:** deterministic local mode remains available with `LLM_PROVIDER=none`.
 
-## 5. Safety
+## 6. Safety
 
 - Never open a suspicious destination merely to inspect it in the user's browser.
 - Never use contact details supplied by a suspicious message as the verification channel.
 - Never claim voice analysis proves a deepfake.
 - Never auto-block or auto-report a real person or account.
 - Always expose uncertainty and “what we did not check”.
+- Treat all user-supplied message, OCR, QR, URL and transcript content as untrusted data.
 
-## 6. Free-first LLM budget
+## 7. LLM budget
 
-The adversarial roles are deterministic. If Gemini is configured, the evidence arena uses at most one optional arbitration call and the final synthesis uses one call. The full application remains functional with zero hosted calls.
+Hunter, Skeptic and Verifier are deterministic/local-first. Hosted reasoning is reserved for high-value synthesis. Target: **0–2 hosted LLM calls per case**.

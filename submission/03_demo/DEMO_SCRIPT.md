@@ -1,5 +1,7 @@
 # TRUST//INTERCEPT — 3-Minute Demo Script
 
+> **Runtime:** This is the live hosted demo path. The Vercel frontend calls the deployed FastAPI backend, which uses a real configured LLM provider. Offline mode is only the emergency fallback.
+
 ## 0:00–0:20 — Problem
 “Scams don't need to steal your money first. They need to control your next decision. This parcel message is trying to make the user click, pay and trust the sender before verifying anything.”
 

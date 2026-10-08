@@ -27,7 +27,7 @@ Suspicious content remains untrusted data throughout the workflow. It cannot red
 The distinctive design is the combination of adversarial evidence review, manipulation mapping, counterfactual verification, a human approval gate, replayable provenance and adaptive scam-immunity training. The goal is not merely to classify a scam, but to defend the user's next decision.
 
 ## 5. Safety and Privacy
-PII is redacted before optional hosted reasoning. Deterministic local analysis can run without API keys. Suspicious destinations are not opened in the user's browser. The system does not automatically contact, block or report people. Consequential actions require human approval.
+PII is redacted before hosted reasoning. The competition demo uses hosted reasoning through a server-side provider key; deterministic local analysis remains available as a recovery mode without API keys. Suspicious destinations are not opened in the user's browser. The system does not automatically contact, block or report people. Consequential actions require human approval.
 
 ## 6. Evaluation
 The built-in Evaluation Lab covers scam, legitimate, borderline and adversarial cases and reports accuracy, precision, recall, F1 and false-positive rate. Phase 11's benchmark currently passes its maintained test set with 100% accuracy, 100% precision, 100% recall, 100% F1 and 0% false-positive rate. These figures describe the maintained benchmark only and are not claimed as real-world detection rates.

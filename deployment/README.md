@@ -1,32 +1,78 @@
 # TRUST//INTERCEPT deployment runbook
 
-TRUST//INTERCEPT is designed to run with a separate frontend and FastAPI backend.
-The product remains usable with `LLM_PROVIDER=none` and `ALLOW_OUTBOUND_LOOKUPS=false`.
+## Recommended competition deployment
 
-## Backend
+Use a **split deployment**:
 
-Recommended production environment variables:
+```text
+Vercel
+  ↓
+TRUST//INTERCEPT React frontend
+  ↓ HTTPS
+FastAPI backend (Render / Railway / Fly.io / VM / equivalent)
+  ↓
+LLM provider + optional reputation tools + persistent storage
+```
 
-- `CORS_ORIGINS=https://<your-frontend-domain>`
-- `LLM_PROVIDER=auto` (or `none` for fully offline mode)
-- provider API keys only through the host's secret manager
-- `ALLOW_OUTBOUND_LOOKUPS=false` unless live URL inspection is explicitly required
-- `DB_PATH=/data/trust-intercept.db` on a persistent volume
+Vercel hosts the static Vite/React frontend. The backend is a separate FastAPI service because provider API keys must remain server-side and the current backend is not configured as a Vercel Python serverless function.
 
-Health endpoints:
+### Vercel frontend environment
 
-- `/health` — liveness/configuration summary
-- `/ready` — deployment readiness, database status and offline fallback status
+Set this build-time variable in the Vercel project:
 
-## Frontend
+```text
+VITE_API_BASE_URL=https://YOUR-BACKEND-DOMAIN.example.com
+```
 
-Set `VITE_API_BASE_URL` to the deployed backend origin before building.
-The frontend is a static Vite application and can be deployed to Vercel, Netlify,
-or any static host that supports SPA fallback to `index.html`.
+This is a public URL, not a secret.
 
-## Demo/offline mode
+Do **not** put any of these into Vercel frontend environment variables:
 
-For a deterministic local demonstration:
+```text
+GONKA_API_KEY
+FEATHERLESS_API_KEY
+GEMINI_API_KEY
+VIRUSTOTAL_API_KEY
+SAFE_BROWSING_API_KEY
+GOOGLE_VISION_API_KEY
+```
+
+### FastAPI backend environment
+
+For the live competition demo, the recommended provider is Gonka:
+
+```text
+LLM_PROVIDER=gonka
+GONKA_API_KEY=<secret stored in backend host secret manager>
+GONKA_MODEL=MiniMaxAI/MiniMax-M2.7
+ALLOW_OUTBOUND_LOOKUPS=true
+CORS_ORIGINS=https://YOUR-VERCEL-DOMAIN.vercel.app
+```
+
+Optional fallback providers may be configured with their own server-side keys:
+
+```text
+FEATHERLESS_API_KEY=
+GEMINI_API_KEY=
+```
+
+The backend never returns the key values through `/health` or `/ready`; only configured/not-configured status is exposed.
+
+## Live demo profile
+
+The intended judge/demo path uses real hosted inference, not the offline engine:
+
+```text
+LLM_PROVIDER=gonka
+ALLOW_OUTBOUND_LOOKUPS=true
+OCR_CLOUD_FALLBACK=false
+```
+
+If the demo provider becomes unavailable, the deterministic local engine remains available as a recovery path.
+
+## Offline recovery profile
+
+For a no-network fallback:
 
 ```text
 LLM_PROVIDER=none
@@ -34,13 +80,30 @@ ALLOW_OUTBOUND_LOOKUPS=false
 OCR_CLOUD_FALLBACK=false
 ```
 
-The core decision-defence pipeline continues to run locally. This mode avoids
-provider quota, external-network dependency and accidental contact with live URLs.
+This is a backup mode, not the primary competition demo configuration.
 
-## Production safety
+## Backend
 
-- Never commit `.env` or API keys.
-- Use HTTPS for the frontend and backend.
-- Keep the SQLite file on persistent storage if using the local persistence mode.
-- Disable outbound lookups unless the deployment explicitly needs them.
-- Do not expose `/docs` publicly unless API exploration is required.
+Run locally:
+
+```bash
+uvicorn backend.main:app --host 0.0.0.0 --port 8000
+```
+
+Health endpoints:
+
+- `/health` — liveness/configuration summary
+- `/ready` — deployment readiness and database status
+
+## Storage
+
+SQLite is suitable for the hackathon demo when attached to persistent storage. For a production service, use a persistent volume or migrate to a managed database before treating the deployment as production infrastructure.
+
+## Security
+
+- Never commit `.env` or provider keys.
+- Use HTTPS for frontend and backend.
+- Restrict `CORS_ORIGINS` to the actual Vercel domain.
+- Keep provider secrets only on the backend host.
+- Do not expose `/docs` publicly unless needed.
+- Keep outbound URL access controlled by `ALLOW_OUTBOUND_LOOKUPS` and the tool URL policy.
