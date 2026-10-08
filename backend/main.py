@@ -56,6 +56,12 @@ app.include_router(report.router)
 app.include_router(metrics.router)
 
 
+@app.get("/evaluation", tags=["evaluation"], summary="Run the local scam-defence benchmark without persisting benchmark cases")
+def evaluation() -> dict:
+    from backend.agent.evaluation import run_evaluation
+    return run_evaluation()
+
+
 @app.get("/case/{case_id}/replay", tags=["audit"], summary="Replay the persisted redacted investigation without re-running tools")
 def replay_case(case_id: str) -> dict:
     from fastapi import HTTPException

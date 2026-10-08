@@ -172,8 +172,29 @@ def _risk_from_severities(severities: list[Severity]) -> RiskLevel:
     return RiskLevel.LOW
 
 
+def _is_defensive_context(text: str) -> bool:
+    """Detect educational/defensive language so scam vocabulary is not treated as an attack.
+
+    This is intentionally conservative: the whole-message suppression only applies when the
+    message explicitly frames the terms as warnings and also tells the recipient not to act.
+    A real request such as "never share your OTP — enter it here now" therefore still gets cues.
+    """
+    lowered = text.lower()
+    framing = (
+        re.search(r"\b(security reminder|safety reminder|security notice)\b", lowered)
+        or re.search(r"\b(criminals|scammers|fraudsters) (may|often|can) use\b", lowered)
+        or re.search(r"\b(we|we will) never ask (for|you to share)\b", lowered)
+    )
+    no_action = (
+        re.search(r"\b(do not|don't|never|do nothing|no action needed|nothing to do|avoid)\b", lowered)
+        and not re.search(r"\b(click|pay|transfer|enter|send|share|provide)\b", lowered)
+    )
+    return bool(framing and no_action)
+
+
 def _rule_cues(redacted_text: str) -> list[Cue]:
     cues: list[Cue] = []
+    defensive_context = _is_defensive_context(redacted_text)
     seen: set[tuple[str, str]] = set()
 
     for cue_type, severity, explanation, pattern in ALL_PATTERNS:
@@ -183,6 +204,8 @@ def _rule_cues(redacted_text: str) -> list[Cue]:
             if key in seen or not quoted:
                 continue
             seen.add(key)
+            if defensive_context:
+                continue
             cues.append(
                 Cue(
                     cue_type=cue_type,

@@ -6,6 +6,7 @@ import Submit from "./pages/Submit.jsx";
 import Review from "./pages/Review.jsx";
 import ReportView from "./pages/ReportView.jsx";
 import Coach from "./pages/Coach.jsx";
+import Evaluation from "./pages/Evaluation.jsx";
 
 function Header() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="/case/:caseId/review" element={<Review />} />
             <Route path="/case/:caseId/report" element={<ReportView />} />
             <Route path="/case/:caseId/coach" element={<Coach />} />
+            <Route path="/evaluation" element={<Evaluation />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

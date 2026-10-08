@@ -367,3 +367,31 @@ def test_intel_match_fires_on_previously_reported_url(client):
     match_evidence = [e for e in body["evidence"] if e["tool"] == "community_intel_match"]
     assert match_evidence, "intel match must be logged as evidence"
     assert body["verdict"]["cues"][0]["cue_type"] == "threat_intel_match"
+
+
+def test_evaluation_lab_reports_confusion_metrics(client):
+    response = client.get("/evaluation")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["benchmark"]["cases"] >= 6
+    assert set(body["confusion_matrix"]) == {"true_positive", "true_negative", "false_positive", "false_negative"}
+    for key in ("accuracy", "precision", "recall", "f1", "false_positive_rate"):
+        assert 0 <= body["metrics"][key] <= 1
+    assert any(item["label"] == "legit" for item in body["results"])
+    assert any(item["label"] == "borderline" for item in body["results"])
+
+
+def test_defensive_language_does_not_create_false_positive(client):
+    response = client.post(
+        "/case",
+        json={
+            "input_type": "text",
+            "text": (
+                "Security reminder: criminals may use URGENT language, OTP requests and payment links. "
+                "This notice asks you to do nothing and verify through the official app."
+            ),
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["verdict"]["score"] == "low"

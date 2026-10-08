@@ -56,6 +56,9 @@ export const api = {
   /** Live command-center telemetry for the metrics dashboard (GET /metrics). */
   getMetrics: () => request("/metrics"),
 
+  /** Local benchmark: scam, legitimate, borderline and adversarial cases. */
+  getEvaluation: () => request("/evaluation"),
+
   submitCase: (payload) => request("/case", { method: "POST", body: payload }),
 
   getCase: (caseId) => request(`/case/${encodeURIComponent(caseId)}`),
