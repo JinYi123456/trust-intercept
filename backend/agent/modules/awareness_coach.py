@@ -174,3 +174,25 @@ def run(case: Case, verdict: Verdict | None) -> Quiz:
         questions=questions,
         generated_by_llm=generated_by_llm,
     )
+
+
+FOCUS_BY_PATTERN = {
+    "Fake courier / parcel-fee scam": "independent delivery verification + payment pressure",
+    "Fake bank security alert": "official-channel verification + credential protection",
+    "Fake OTP / verification-code request": "OTP secrecy + account takeover prevention",
+    "Phishing 'verify your account' lure": "independent verification + suspicious-link avoidance",
+    "Prize / lottery / refund scam": "unexpected reward skepticism + fee-before-payout detection",
+    "Government / tax authority impersonation": "authority impersonation + independently sourced contact details",
+}
+
+def focus_for_question(pattern_name: str, question: QuizQuestion) -> str:
+    text = f"{question.question} {question.explanation}".lower()
+    if "otp" in text or "passcode" in text or "credential" in text:
+        return "credential and OTP protection"
+    if "link" in text or "url" in text or "click" in text:
+        return "safe link verification"
+    if "urgency" in text or "deadline" in text or "hurry" in text:
+        return "urgency resistance"
+    if "official" in text or "verify" in text or "channel" in text:
+        return "independent verification"
+    return FOCUS_BY_PATTERN.get(pattern_name, "evidence-based scam recognition")

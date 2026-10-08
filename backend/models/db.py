@@ -20,6 +20,8 @@ from backend.models.case import (
     Evidence,
     InputType,
     Quiz,
+    QuizAttempt,
+    PatternMastery,
     ReportBundle,
     Verdict,
     utcnow,
@@ -61,6 +63,17 @@ CREATE TABLE IF NOT EXISTS artifacts (
     payload    TEXT NOT NULL,
     created_at TEXT NOT NULL,
     PRIMARY KEY (case_id, kind)
+);
+CREATE TABLE IF NOT EXISTS quiz_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    case_id TEXT NOT NULL REFERENCES cases(id),
+    pattern_name TEXT NOT NULL,
+    score INTEGER NOT NULL,
+    total INTEGER NOT NULL,
+    accuracy REAL NOT NULL,
+    missed_indexes TEXT NOT NULL,
+    focus_areas TEXT NOT NULL,
+    completed_at TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS community_hashes (
     hash         TEXT PRIMARY KEY,
@@ -275,3 +288,53 @@ def count_decisions(case_id: str) -> int:
 
 def input_type_from_row(row: dict[str, Any]) -> InputType:
     return InputType(row["input_type"])
+
+
+# ---------------------------------------------------------------------------
+# Adaptive awareness learning outcomes
+# ---------------------------------------------------------------------------
+
+def save_quiz_attempt(attempt: QuizAttempt) -> None:
+    with _db() as conn:
+        conn.execute(
+            "INSERT INTO quiz_attempts (case_id, pattern_name, score, total, accuracy, missed_indexes, focus_areas, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (attempt.case_id, attempt.pattern_name, attempt.score, attempt.total, attempt.accuracy,
+             json.dumps(attempt.missed_indexes), json.dumps(attempt.focus_areas), attempt.completed_at.isoformat()),
+        )
+
+def _mastery_band(accuracy: float, attempts: int) -> str:
+    if accuracy >= 0.90 and attempts >= 2:
+        return "mastered"
+    if accuracy >= 0.80:
+        return "strong"
+    if accuracy >= 0.60:
+        return "building"
+    return "developing"
+
+def get_pattern_mastery(pattern_name: str) -> PatternMastery:
+    with _db() as conn:
+        row = conn.execute(
+            "SELECT COUNT(*) attempts, COALESCE(SUM(total),0) questions_seen, COALESCE(SUM(score),0) correct_answers FROM quiz_attempts WHERE pattern_name = ?",
+            (pattern_name,),
+        ).fetchone()
+        focus_rows = conn.execute(
+            "SELECT focus_areas FROM quiz_attempts WHERE pattern_name = ? ORDER BY id DESC LIMIT 10",
+            (pattern_name,),
+        ).fetchall()
+    attempts = int(row["attempts"] or 0)
+    questions_seen = int(row["questions_seen"] or 0)
+    correct = int(row["correct_answers"] or 0)
+    accuracy = round(correct / questions_seen, 3) if questions_seen else 0.0
+    counts: dict[str, int] = {}
+    for item in focus_rows:
+        for area in json.loads(item["focus_areas"] or "[]"):
+            counts[area] = counts.get(area, 0) + 1
+    next_focus = [name for name, _ in sorted(counts.items(), key=lambda pair: (-pair[1], pair[0]))[:3]]
+    return PatternMastery(pattern_name=pattern_name, attempts=attempts, questions_seen=questions_seen,
+                          correct_answers=correct, accuracy=accuracy,
+                          mastery_band=_mastery_band(accuracy, attempts), next_focus=next_focus)
+
+def list_quiz_attempts(case_id: str) -> list[QuizAttempt]:
+    with _db() as conn:
+        rows = conn.execute("SELECT * FROM quiz_attempts WHERE case_id = ? ORDER BY id", (case_id,)).fetchall()
+    return [QuizAttempt(case_id=r["case_id"], pattern_name=r["pattern_name"], score=r["score"], total=r["total"], accuracy=r["accuracy"], missed_indexes=json.loads(r["missed_indexes"]), focus_areas=json.loads(r["focus_areas"]), completed_at=r["completed_at"]) for r in rows]

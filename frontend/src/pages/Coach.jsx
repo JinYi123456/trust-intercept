@@ -19,6 +19,9 @@ export default function Coach() {
   const [selected, setSelected] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [finished, setFinished] = useState(false);
+  const [mastery, setMastery] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
 
   useEffect(() => {
     let active = true;
@@ -38,11 +41,26 @@ export default function Coach() {
     };
   }, [caseId]);
 
+  async function submitAttempt(finalAnswers) {
+    setSaving(true);
+    setSaveError(null);
+    try {
+      const result = await api.submitCoach(caseId, finalAnswers.map((answer) => answer.selected));
+      setMastery(result.mastery);
+    } catch (submitError) {
+      setSaveError(submitError.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
   function reset() {
     setIndex(0);
     setSelected(null);
     setAnswers([]);
     setFinished(false);
+    setMastery(null);
+    setSaveError(null);
   }
 
   if (loading) {
@@ -109,6 +127,36 @@ export default function Coach() {
             PATTERN TRAINED: <span className="text-neon-cyan">{quiz.pattern_name}</span>
           </p>
 
+          {saving && (
+            <p className="mt-3 font-mono text-[10px] tracking-[0.18em] text-neon-cyan">UPDATING PATTERN MASTERY…</p>
+          )}
+
+          {mastery && (
+            <div className="mt-5 rounded-xl border border-neon-cyan/30 bg-neon-cyan/5 p-4 text-left">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="font-mono text-[10px] font-bold tracking-[0.2em] text-slate-500">PATTERN MASTERY</p>
+                  <p className="mt-1 text-lg font-black uppercase tracking-wider text-neon-cyan">{mastery.mastery_band}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-mono text-xs text-slate-400">{Math.round(mastery.accuracy * 100)}% lifetime accuracy</p>
+                  <p className="font-mono text-[10px] text-slate-500">{mastery.attempts} attempt{mastery.attempts === 1 ? "" : "s"} · {mastery.questions_seen} questions</p>
+                </div>
+              </div>
+              {mastery.next_focus?.length > 0 && (
+                <div className="mt-3">
+                  <p className="font-mono text-[10px] tracking-wider text-slate-500">NEXT TRAINING FOCUS</p>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {mastery.next_focus.map((focus) => (
+                      <span key={focus} className="rounded-full border border-gold-neon/40 bg-gold-neon/5 px-2.5 py-1 font-mono text-[10px] text-amber-200">{focus}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          {saveError && <p className="mt-3 text-xs text-amber-200">Learning result could not be synced: {saveError}</p>}
+
           {missed.length > 0 && (
             <div className="mt-6 space-y-3 text-left">
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
@@ -166,6 +214,7 @@ export default function Coach() {
     setAnswers(nextAnswers);
     if (index + 1 >= total) {
       setFinished(true);
+      void submitAttempt(nextAnswers);
     } else {
       setIndex(index + 1);
       setSelected(null);
@@ -269,7 +318,7 @@ export default function Coach() {
 
       <p className="mt-4 text-center font-mono text-[11px] tracking-wider text-slate-500">
         This quiz is a reinforcement aid built from the pattern just detected — not a certified
-        training curriculum.
+        training curriculum. Only pattern-level quiz outcomes are stored; no answer text or PII is retained.
       </p>
     </div>
   );

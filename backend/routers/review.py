@@ -30,6 +30,8 @@ from backend.models.case import (
     Evidence,
     HumanAction,
     Quiz,
+    QuizSubmitRequest,
+    QuizAttempt,
 )
 from backend.routers.metrics import record_threat_indicator
 from backend.tools import sandbox_recon
@@ -190,3 +192,66 @@ def launch_coach(case_id: str) -> Quiz:
         ),
     )
     return quiz
+
+
+@router.post(
+    "/case/{case_id}/coach/submit",
+    tags=["awareness"],
+    summary="Score a completed awareness quiz and update pattern mastery",
+)
+def submit_coach(case_id: str, request: QuizSubmitRequest) -> dict:
+    orchestrator = get_orchestrator()
+    case = orchestrator.load_case(case_id)
+    if case is None:
+        raise HTTPException(status_code=404, detail=f"Case {case_id} not found.")
+    quiz = db.get_quiz_artifact(case_id)
+    if quiz is None or not quiz.questions:
+        raise HTTPException(status_code=409, detail="No awareness quiz is available for this case.")
+    if len(request.answers) != len(quiz.questions):
+        raise HTTPException(status_code=422, detail="Submit exactly one answer per quiz question.")
+
+    correct = 0
+    missed: list[int] = []
+    focus_areas: list[str] = []
+    for index, selected in enumerate(request.answers):
+        question = quiz.questions[index]
+        if selected == question.correct_index:
+            correct += 1
+        else:
+            missed.append(index)
+            focus_areas.append(awareness_coach.focus_for_question(quiz.pattern_name, question))
+
+    total = len(quiz.questions)
+    accuracy = round(correct / total, 3) if total else 0.0
+    # Keep only distinct focus areas so the learning record stays compact.
+    focus_areas = list(dict.fromkeys(focus_areas))
+    attempt = QuizAttempt(
+        case_id=case_id, pattern_name=quiz.pattern_name, score=correct, total=total,
+        accuracy=accuracy, missed_indexes=missed, focus_areas=focus_areas,
+    )
+    db.save_quiz_attempt(attempt)
+    mastery = db.get_pattern_mastery(quiz.pattern_name)
+    return {
+        "attempt": attempt.model_dump(mode="json"),
+        "mastery": mastery.model_dump(mode="json"),
+        "message": (
+            "Pattern mastered — keep using independent verification." if mastery.mastery_band == "mastered"
+            else "Recognition is building. Your next training should target the missed cues."
+        ),
+        "privacy": "Only quiz outcomes and pattern-level focus areas are stored; answer text and case PII are not persisted.",
+    }
+
+
+@router.get(
+    "/case/{case_id}/coach/mastery",
+    tags=["awareness"],
+    summary="Read the current mastery state for this case's scam pattern",
+)
+def coach_mastery(case_id: str) -> dict:
+    orchestrator = get_orchestrator()
+    if orchestrator.load_case(case_id) is None:
+        raise HTTPException(status_code=404, detail=f"Case {case_id} not found.")
+    quiz = db.get_quiz_artifact(case_id)
+    if quiz is None:
+        raise HTTPException(status_code=409, detail="No awareness quiz is available for this case.")
+    return db.get_pattern_mastery(quiz.pattern_name).model_dump(mode="json")

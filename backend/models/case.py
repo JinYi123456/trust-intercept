@@ -243,6 +243,31 @@ class Quiz(BaseModel):
     generated_by_llm: bool = False
 
 
+class QuizAttempt(BaseModel):
+    """Redacted learning outcome; no answer text or PII is stored."""
+
+    case_id: str
+    pattern_name: str
+    score: int
+    total: int
+    accuracy: float
+    missed_indexes: list[int] = []
+    focus_areas: list[str] = []
+    completed_at: datetime = Field(default_factory=utcnow)
+
+
+class PatternMastery(BaseModel):
+    """Aggregate mastery for a scam pattern, derived only from quiz outcomes."""
+
+    pattern_name: str
+    attempts: int = 0
+    questions_seen: int = 0
+    correct_answers: int = 0
+    accuracy: float = 0.0
+    mastery_band: Literal["developing", "building", "strong", "mastered"] = "developing"
+    next_focus: list[str] = []
+
+
 # ---------------------------------------------------------------------------
 # The verdict — proposes, never acts
 # ---------------------------------------------------------------------------
@@ -286,6 +311,10 @@ class Decision(BaseModel):
 # ---------------------------------------------------------------------------
 # API payloads
 # ---------------------------------------------------------------------------
+
+
+class QuizSubmitRequest(BaseModel):
+    answers: list[int] = []
 
 
 class CaseCreate(BaseModel):

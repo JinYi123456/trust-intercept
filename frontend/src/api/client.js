@@ -65,6 +65,8 @@ export const api = {
     request(`/case/${encodeURIComponent(caseId)}/decision`, { method: "POST", body: payload }),
 
   /** Module 4 — launch the awareness quiz for the detected scam pattern. */
+  submitCoach: (caseId, answers) => request(`/case/${caseId}/coach/submit`, { method: "POST", body: { answers } }),
+  getCoachMastery: (caseId) => request(`/case/${caseId}/coach/mastery`),
   launchCoach: (caseId) => request(`/case/${encodeURIComponent(caseId)}/coach`, { method: "POST" }),
 
   /** Federated Scam Intelligence Network — anonymous threat-indicator hashes. */
