@@ -17,3 +17,5 @@ frontend/dist/
 .pytest_cache/
 .DS_Store
 Thumbs.db
+
+PRIVATE_OPERATOR_MANUAL.md
