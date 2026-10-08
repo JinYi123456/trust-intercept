@@ -7,6 +7,7 @@ import Review from "./pages/Review.jsx";
 import ReportView from "./pages/ReportView.jsx";
 import Coach from "./pages/Coach.jsx";
 import Evaluation from "./pages/Evaluation.jsx";
+import AppErrorBoundary from "./components/AppErrorBoundary.jsx";
 
 function Header() {
   return (
@@ -40,11 +41,13 @@ function Header() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <AppErrorBoundary>
+      <BrowserRouter>
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[200] focus:rounded-lg focus:bg-space-950 focus:px-3 focus:py-2 focus:font-mono focus:text-xs focus:text-neon-cyan">Skip to main content</a>
       <div className="flex min-h-screen flex-col">
         <Header />
 
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <main id="main-content" tabIndex="-1" className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 outline-none sm:px-6 sm:py-8 lg:px-8">
           <Routes>
             <Route path="/" element={<Submit />} />
             <Route path="/case/:caseId/review" element={<Review />} />
@@ -60,6 +63,7 @@ export default function App() {
           person decides. Nothing is sent, blocked, or filed without your explicit approval.
         </footer>
       </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AppErrorBoundary>
   );
 }

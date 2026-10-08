@@ -127,3 +127,19 @@
            hover:border-neon-cyan/50 hover:text-neon-cyan;
   }
 }
+
+@layer components {
+  .state-panel {
+    @apply glass-panel p-5;
+  }
+  .state-title {
+    @apply font-mono text-xs font-bold uppercase tracking-[0.18em] text-slate-300;
+  }
+  .state-copy {
+    @apply mt-2 text-sm leading-6 text-slate-500;
+  }
+}
+
+@media (max-width: 640px) {
+  .break-url { font-size: 0.72rem; line-height: 1.45; }
+}
