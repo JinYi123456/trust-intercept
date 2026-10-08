@@ -22,6 +22,7 @@ from typing import Optional
 from backend.agent import llm
 from backend.agent.debate import run_debate
 from backend.agent.decision_defence import build_defence_plan
+from backend.agent.counterfactual import build_counterfactual_verification
 from backend.agent.modules import awareness_coach, link_safety, phishing_detector, scam_reporter
 from backend.agent.router import MODULE_1, MODULE_2, route_case
 from backend.config import get_settings
@@ -420,6 +421,19 @@ class Orchestrator:
         )
         evidence.append(Evidence(tool="decision_defence", raw_output=defence_plan))
 
+        # --- Counterfactual Verification Engine --------------------------
+        # Defines independent evidence to seek without opening suspicious
+        # destinations or fabricating external confirmation.
+        verification = build_counterfactual_verification(
+            redacted_text=case.redacted_text,
+            cues=[cue.model_dump(mode="json") for cue in cues],
+            defence_plan=defence_plan,
+            domains=link_domains,
+            link_result=link,
+            risk=rule_risk.value,
+        )
+        evidence.append(Evidence(tool="counterfactual_verification", raw_output=verification))
+
         # --- Debate outcome disclosed in the uncertainty note -------------
         if resolution.get("consensus") == "contested":
             uncertainty = (
@@ -461,6 +475,14 @@ class Orchestrator:
                 "intended_actions": defence_plan.get("intended_actions"),
                 "counterfactual": defence_plan.get("counterfactual"),
                 "safe_verification": defence_plan.get("safe_verification"),
+            },
+            "counterfactual_verification": {
+                "overall_state": verification.get("overall_state"),
+                "claim_under_test": verification.get("claim_under_test"),
+                "risk_impact": verification.get("risk_impact"),
+                "risk_delta": verification.get("risk_delta"),
+                "human_required": verification.get("human_required"),
+                "network_action_taken": verification.get("network_action_taken"),
             },
             "note": "Full prompt/tool-output/response trio logged as separate evidence entries.",
         }

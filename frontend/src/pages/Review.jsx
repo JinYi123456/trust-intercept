@@ -10,6 +10,7 @@ import VoiceExplanation from "../components/VoiceExplanation.jsx";
 import EvidencePassport from "../components/EvidencePassport.jsx";
 import ManipulationGraph from "../components/ManipulationGraph.jsx";
 import EvidenceChallengeMatrix from "../components/EvidenceChallengeMatrix.jsx";
+import CounterfactualVerification from "../components/CounterfactualVerification.jsx";
 import { ACTION_LABELS, cx, formatDateTime } from "../lib/ui";
 
 /**
@@ -115,6 +116,7 @@ export default function Review() {
   const caseInfo = view?.case || {};
   const radarEvidence = (view?.evidence || []).find((entry) => entry.tool === "psych_radar")?.raw_output || null;
   const defenceEvidence = (view?.evidence || []).find((entry) => entry.tool === "decision_defence")?.raw_output || null;
+  const verificationEvidence = (view?.evidence || []).find((entry) => entry.tool === "counterfactual_verification")?.raw_output || null;
   const coolingRequired = Boolean(radarEvidence?.cooling_off_required);
 
   // --- Trusted Caregiver Safety Circle -------------------------------------
@@ -723,6 +725,8 @@ export default function Review() {
                   </div>
                 </div>
               </div>
+
+              <CounterfactualVerification verification={verificationEvidence} />
 
               <div className="mt-3 rounded-xl border border-neon-green/25 bg-neon-green/5 p-4">
                 <p className="font-mono text-[10px] font-bold tracking-[0.18em] text-neon-green">COUNTERFACTUAL CHECK</p>
