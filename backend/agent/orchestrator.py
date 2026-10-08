@@ -22,6 +22,7 @@ from typing import Optional
 from backend.agent import llm
 from backend.agent.debate import run_debate
 from backend.agent.decision_defence import build_defence_plan
+from backend.agent.security import inspect_untrusted_text
 from backend.agent.counterfactual import build_counterfactual_verification
 from backend.agent.provenance import build_case_provenance
 from backend.agent.modules import awareness_coach, link_safety, phishing_detector, scam_reporter
@@ -65,6 +66,8 @@ class Orchestrator:
 
         db.update_case_status(case.id, CaseStatus.NORMALISING)
         evidence = self._normalise(case, image_bytes)
+        security_boundary = inspect_untrusted_text(case.redacted_text)
+        evidence.append(Evidence(tool="security_boundary", raw_output=security_boundary))
         for entry in evidence:
             db.add_evidence(case.id, entry)
         db.update_case_text(case.id, case.redacted_text)

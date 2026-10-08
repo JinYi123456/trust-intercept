@@ -35,6 +35,7 @@ from backend.models.case import (
 )
 from backend.routers.metrics import record_threat_indicator
 from backend.tools import sandbox_recon
+from backend.agent.security import tool_url_policy
 
 router = APIRouter(tags=["review"])
 
@@ -158,6 +159,9 @@ def run_sandbox_recon(case_id: str) -> dict:
     target = next((url for url in candidates if url.startswith("http")), None)
     if not target:
         raise HTTPException(status_code=422, detail="No URL present in this case to probe.")
+    policy = tool_url_policy(target)
+    if not policy["allowed"]:
+        raise HTTPException(status_code=422, detail="Sandbox recon blocked by outbound target safety policy: " + "; ".join(policy["reasons"]))
 
     result = sandbox_recon.probe(target, verdict.score.value)
     db.add_evidence(case_id, Evidence(tool="sandbox_recon", raw_output=result))

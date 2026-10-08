@@ -12,6 +12,7 @@ import ManipulationGraph from "../components/ManipulationGraph.jsx";
 import EvidenceChallengeMatrix from "../components/EvidenceChallengeMatrix.jsx";
 import CounterfactualVerification from "../components/CounterfactualVerification.jsx";
 import CaseReplay from "../components/CaseReplay.jsx";
+import SecurityBoundary from "../components/SecurityBoundary.jsx";
 import { ACTION_LABELS, cx, formatDateTime } from "../lib/ui";
 
 /**
@@ -118,6 +119,7 @@ export default function Review() {
   const radarEvidence = (view?.evidence || []).find((entry) => entry.tool === "psych_radar")?.raw_output || null;
   const defenceEvidence = (view?.evidence || []).find((entry) => entry.tool === "decision_defence")?.raw_output || null;
   const verificationEvidence = (view?.evidence || []).find((entry) => entry.tool === "counterfactual_verification")?.raw_output || null;
+  const securityEvidence = (view?.evidence || []).find((entry) => entry.tool === "security_boundary")?.raw_output || null;
   const coolingRequired = Boolean(radarEvidence?.cooling_off_required);
 
   // --- Trusted Caregiver Safety Circle -------------------------------------
@@ -785,6 +787,8 @@ export default function Review() {
               </div>
             </section>
           )}
+
+          <SecurityBoundary security={securityEvidence} />
 
           {/* Safe destination inspection — never encourage opening the suspicious destination. */}
           {chains.length > 0 && (
