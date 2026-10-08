@@ -78,7 +78,7 @@ Competition-only materials belong under `submission/`; they are not product scre
 
 ## Release readiness
 
-Phase 14 is the final product-polish stage. Before submission, run the release checklist covering backend tests, frontend build, offline mode, secret scan and the three-minute demo smoke path. See `docs/phases/PHASE_14_FINAL_PRODUCT_POLISH.md`.
+Phase 16 is the release-candidate audit stage. Before submission, run the final checklist covering backend tests, frontend build, offline mode, secret scan and the three-minute demo smoke path. See `docs/phases/PHASE_14_FINAL_PRODUCT_POLISH.md`.
 
 ## LLM provider strategy
 
