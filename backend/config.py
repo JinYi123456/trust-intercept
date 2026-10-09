@@ -60,8 +60,8 @@ class Settings(BaseSettings):
     featherless_model: str = "Qwen/Qwen2.5-7B-Instruct"
     featherless_base_url: str = "https://api.featherless.ai/v1/chat/completions"
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.5-flash"
-    gemini_audio_model: str = "gemini-2.5-flash"  # native multimodal audio analysis
+    gemini_model: str = "gemini-3.8-flash"
+    gemini_audio_model: str = "gemini-3.8-flash"  # native multimodal audio analysis
     gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta/models"
     llm_timeout_seconds: float = 45.0
     llm_max_tokens: int = 1400

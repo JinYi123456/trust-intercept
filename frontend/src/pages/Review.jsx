@@ -367,7 +367,11 @@ export default function Review() {
     defenceEvidence?.attacker_intended_action ||
     defenceEvidence?.intended_action ||
     defenceEvidence?.attack_chain?.nodes?.find((node) => node.kind === "action")?.label ||
-    (verdict?.action_required ? verdict.action_required.replaceAll("_", " ") : "—");
+    (verdict?.action_required
+      ? typeof verdict.action_required === "string"
+        ? verdict.action_required.replaceAll("_", " ")
+        : "unspecified — verify sender first"
+      : "—");
 
   // ---- Decision-brief derivations -----------------------------------------
   const scoreKey = scoreLabelKey(verdict?.score);

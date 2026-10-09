@@ -5,6 +5,7 @@ import AudioWaveform from "../components/AudioWaveform.jsx";
 import CameraScanner from "../components/CameraScanner.jsx";
 import LiveMetricsDashboard from "../components/LiveMetricsDashboard.jsx";
 import RadarScan from "../components/RadarScan.jsx";
+import { useLang } from "../lib/i18n.jsx";
 import { cx } from "../lib/ui";
 
 const SAMPLE_SCAM =
@@ -25,11 +26,11 @@ const PIPELINE_STAGES = [
 ];
 
 const TABS = [
-  { id: "text", label: "Message text", hint: "Paste a suspicious SMS or email body." },
-  { id: "url", label: "URL", hint: "Paste a link you were asked to open." },
-  { id: "image", label: "Screenshot / QR", hint: "Upload a screenshot or a QR-code image." },
-  { id: "camera", label: "Live camera scan", hint: "Point your camera at a physical QR code — decoded on-device." },
-  { id: "audio", label: "Audio / Voice call", hint: "Upload or record a suspicious voicemail or voice call for deepfake and coercion analysis." },
+  { id: "text", labelKey: "tabText", hintKey: "hintText" },
+  { id: "url", labelKey: "tabUrl", hintKey: "hintUrl" },
+  { id: "image", labelKey: "tabImage", hintKey: "hintImage" },
+  { id: "camera", labelKey: "tabCamera", hintKey: "hintCamera" },
+  { id: "audio", labelKey: "tabAudio", hintKey: "hintAudio" },
 ];
 
 function fileToBase64(file) {
@@ -47,6 +48,7 @@ function fileToBase64(file) {
 
 export default function Submit() {
   const navigate = useNavigate();
+  const { t } = useLang();
   const [tab, setTab] = useState("text");
   const [text, setText] = useState("");
   const [url, setUrl] = useState("");
@@ -129,12 +131,10 @@ export default function Submit() {
       {/* Cyber hero */}
       <div className="mb-6 text-center sm:mb-8">
         <h1 className="text-2xl font-black tracking-tight text-slate-100 sm:text-3xl">
-          Check a suspicious message
+          {t("submitHeading")}
         </h1>
         <p className="mx-auto mt-2 max-w-xl text-sm text-slate-300 sm:text-base">
-          Paste a message, drop a link, scan a QR code, upload a screenshot, or upload a suspicious
-          voice call. TRUST//INTERCEPT checks the evidence and explains what it found in plain
-          language — <strong className="text-slate-100">you decide</strong> what to do next.
+          {t("submitIntro")}
         </p>
       </div>
 
@@ -155,16 +155,16 @@ export default function Submit() {
                   : "text-muted hover:text-slate-300"
               )}
             >
-              {item.label.toUpperCase()}
+              {t(item.labelKey).toUpperCase()}
             </button>
           ))}
         </div>
-        <p className="mt-2 text-xs text-muted">{TABS.find((t) => t.id === tab)?.hint}</p>
+        <p className="mt-2 text-xs text-muted">{t(TABS.find((item) => item.id === tab)?.hintKey)}</p>
 
         <div className="mt-4">
           {tab === "text" && (
             <div>
-              <label htmlFor="message-text" className="sr-only">Message text</label>
+              <label htmlFor="message-text" className="sr-only">{t("tabText")}</label>
               <textarea
                 id="message-text"
                 value={text}
@@ -179,14 +179,14 @@ export default function Submit() {
                   onClick={() => setText(SAMPLE_SCAM)}
                   className="rounded-full border border-neon-red/40 bg-neon-red/10 px-3 py-1 font-mono text-[11px] font-bold tracking-wider text-neon-red hover:bg-neon-red/20"
                 >
-                  ⚠ LOAD SAMPLE: PARCEL-FEE SCAM SMS
+                  {t("loadScamSample")}
                 </button>
                 <button
                   type="button"
                   onClick={() => setText(SAMPLE_LEGIT)}
                   className="rounded-full border border-neon-green/40 bg-neon-green/10 px-3 py-1 font-mono text-[11px] font-bold tracking-wider text-neon-green hover:bg-neon-green/20"
                 >
-                  ✓ LOAD SAMPLE: LEGITIMATE COURIER SMS
+                  {t("loadLegitSample")}
                 </button>
               </div>
             </div>
@@ -204,18 +204,17 @@ export default function Submit() {
                 className="w-full rounded-lg border border-slate-700/80 bg-space-950/70 p-3 font-mono text-sm text-slate-200 placeholder:text-faint focus:border-neon-cyan/60 focus:outline-none focus:ring-2 focus:ring-neon-cyan/25"
               />
               <p className="mt-2 text-xs text-muted">
-                TRUST//INTERCEPT traces the redirect chain (≤5 hops), checks domain age and reputation —
-                before you ever open it.
+                {t("urlHelper")}
               </p>
             </div>
           )}
 
           {tab === "image" && (
             <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label="Image type">
+              <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label={t("imageTypeLabel")}>
                 {[
-                  { id: "screenshot", label: "MESSAGE SCREENSHOT" },
-                  { id: "qr", label: "QR CODE IMAGE" },
+                  { id: "screenshot", labelKey: "imageKindScreenshot" },
+                  { id: "qr", labelKey: "imageKindQr" },
                 ].map((option) => (
                   <label
                     key={option.id}
@@ -234,7 +233,7 @@ export default function Submit() {
                       onChange={() => setImageKind(option.id)}
                       className="sr-only"
                     />
-                    {option.label}
+                    {t(option.labelKey)}
                   </label>
                 ))}
               </div>
@@ -252,9 +251,9 @@ export default function Submit() {
                 ) : (
                   <>
                     <span className="text-3xl" aria-hidden="true">🖼️</span>
-                    <span className="mt-2 text-sm font-medium text-slate-300">Click to choose an image</span>
+                    <span className="mt-2 text-sm font-medium text-slate-300">{t("chooseImage")}</span>
                     <span className="mt-1 text-xs text-muted">
-                      Screenshots are OCR&apos;d locally; QR codes are decoded offline.
+                      {t("imageNote")}
                     </span>
                   </>
                 )}
@@ -268,7 +267,7 @@ export default function Submit() {
               </label>
               {file && (
                 <p className="text-xs text-muted">
-                  Selected: <span className="font-medium text-slate-300">{file.name}</span>
+                  {t("selectedFile")} <span className="font-medium text-slate-300">{file.name}</span>
                 </p>
               )}
             </div>
@@ -309,7 +308,7 @@ export default function Submit() {
                       setRecorder(mr);
                       setRecording(true);
                     } catch {
-                      setError("Microphone access was blocked — upload an audio file instead.");
+                      setError(t("micBlocked"));
                     }
                   }}
                   className={cx(
@@ -319,7 +318,7 @@ export default function Submit() {
                       : "border-neon-red/40 bg-neon-red/10 text-neon-red hover:bg-neon-red/20"
                   )}
                 >
-                  {recording ? "⏹ STOP RECORDING" : "🎙 RECORD FROM MICROPHONE"}
+                  {recording ? t("stopRecording") : t("recordMic")}
                 </button>
               {audioFile && (
                 <button
@@ -327,7 +326,7 @@ export default function Submit() {
                   onClick={() => setAudioFile(null)}
                   className="rounded-full border border-slate-700 bg-space-900 px-3 py-1.5 font-mono text-[11px] font-bold tracking-wider text-slate-400 hover:text-neon-cyan"
                 >
-                  ✕ CLEAR CLIP
+                  {t("clearClip")}
                 </button>
               )}
             </div>
@@ -340,10 +339,10 @@ export default function Submit() {
             >
               <span className="text-3xl" aria-hidden="true">🎧</span>
               <span className="mt-2 text-sm font-medium text-slate-300">
-                {audioFile ? "Replace audio file" : "Click to upload a voicemail / call recording"}
+                {audioFile ? t("replaceAudio") : t("uploadAudio")}
               </span>
               <span className="mt-1 text-xs text-muted">
-                .mp3 / .wav / .m4a / .ogg · max 20 MB · analysed locally first, audio never persisted
+                {t("audioNote")}
               </span>
               <input
                 id="audio-input"
@@ -355,13 +354,13 @@ export default function Submit() {
             </label>
 
             <div>
-              <label htmlFor="audio-context" className="sr-only">Context for the analysts (optional)</label>
+              <label htmlFor="audio-context" className="sr-only">{t("audioContextLabel")}</label>
               <textarea
                 id="audio-context"
                 value={text}
                 onChange={(event) => setText(event.target.value)}
                 rows={3}
-                placeholder="Optional context: what did the caller claim? e.g. 'Caller said my son was kidnapped and demanded a wire transfer' — helps the coercion scan."
+                placeholder={t("audioContextPlaceholder")}
                 className="w-full resize-y rounded-lg border border-slate-700/80 bg-space-950/70 p-3 font-mono text-xs text-slate-200 placeholder:text-faint focus:border-neon-cyan/60 focus:outline-none focus:ring-2 focus:ring-neon-cyan/25"
               />
             </div>
@@ -371,7 +370,7 @@ export default function Submit() {
 
         {error && (
           <div role="alert" className="mt-4 rounded-lg border border-neon-red/40 bg-neon-red/10 p-3 text-sm text-red-200">
-            <span className="font-bold">SUBMISSION FAILED:</span> {error}
+            <span className="font-bold">{t("submissionFailed")}</span> {error}
           </div>
         )}
 
@@ -418,7 +417,7 @@ export default function Submit() {
                   : "cursor-not-allowed border border-slate-700/80 bg-slate-900/60 text-faint"
               )}
             >
-              ⚡ INVESTIGATE WITH TRUST//INTERCEPT
+              {t("investigate")}
             </button>
           )
         )}
@@ -428,7 +427,7 @@ export default function Submit() {
       <LiveMetricsDashboard defaultOpen={false} />
 
       <p className="mt-4 text-center font-mono text-[11px] tracking-wider text-muted">
-        NOTHING IS SENT, BLOCKED, OR FILED AUTOMATICALLY. EVERY ACTION REQUIRES YOUR EXPLICIT APPROVAL.
+        {t("safetyLine")}
       </p>
     </div>
   );

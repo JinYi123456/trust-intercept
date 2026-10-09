@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from typing import Any, Optional
 
 import httpx
@@ -132,17 +133,29 @@ def _call_gemini(prompt: str, system: str) -> str:
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "generationConfig": {"maxOutputTokens": settings.llm_max_tokens},
     }
-    try:
-        response = httpx.post(url, json=body, timeout=settings.llm_timeout_seconds)
-    except Exception as exc:
-        raise LlmUnavailable(f"Gemini request failed: {type(exc).__name__}: {exc}") from exc
-    if response.status_code != 200:
-        raise LlmUnavailable(f"Gemini returned HTTP {response.status_code}.")
-    try:
-        text = response.json()["candidates"][0]["content"]["parts"][0]["text"]
-    except Exception as exc:
-        raise LlmUnavailable(f"Could not parse the Gemini response: {exc}") from exc
-    return _english_only(text)
+    # The free flash tier returns transient 429/503s under load; one short
+    # retry keeps the live demo on hosted reasoning instead of the template
+    # fallback for a blip that clears in seconds.
+    last_error: Optional[str] = None
+    for attempt in range(2):
+        try:
+            response = httpx.post(url, json=body, timeout=settings.llm_timeout_seconds)
+        except Exception as exc:
+            raise LlmUnavailable(f"Gemini request failed: {type(exc).__name__}: {exc}") from exc
+        if response.status_code in (429, 503) and attempt == 0:
+            last_error = f"Gemini returned HTTP {response.status_code}."
+            time.sleep(2.0)
+            continue
+        if response.status_code != 200:
+            raise LlmUnavailable(
+                last_error or f"Gemini returned HTTP {response.status_code}."
+            )
+        try:
+            text = response.json()["candidates"][0]["content"]["parts"][0]["text"]
+        except Exception as exc:
+            raise LlmUnavailable(f"Could not parse the Gemini response: {exc}") from exc
+        return _english_only(text)
+    raise LlmUnavailable(last_error or "Gemini returned no completion.")
 
 
 # ---------------------------------------------------------------------------
